@@ -313,13 +313,6 @@ namespace ParceYmlApp
             Dictionary<string, int> dBrand = new Dictionary<string, int>();
             Dictionary<string, int> dFactory = new Dictionary<string, int>();
 
-            /*
-            foreach (XmlElement cat in categories)
-            {
-                Console.WriteLine(cat.GetAttribute("id"));
-            }
-            */
-
             var brandArr = root.SelectNodes("/yml_catalog/shop/offers/offer/param[@name='Бренд']")
                 .Cast<XmlNode>()
                 .Select(x => new

@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WindowsFormsApplication1
+namespace ParceYmlApp
 {
 
     /// <remarks/>
-    [System.SerializableAttribute()]
+    [Serializable()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
     [System.Xml.Serialization.XmlRootAttribute(Namespace = "", IsNullable = false)]
@@ -48,7 +48,7 @@ namespace WindowsFormsApplication1
     }
 
     /// <remarks/>
-    [System.SerializableAttribute()]
+    [Serializable()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
     public partial class yml_catalogShop
@@ -163,7 +163,7 @@ namespace WindowsFormsApplication1
     }
 
     /// <remarks/>
-    [System.SerializableAttribute()]
+    [Serializable()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
     public partial class yml_catalogShopCurrencies
@@ -186,7 +186,7 @@ namespace WindowsFormsApplication1
     }
 
     /// <remarks/>
-    [System.SerializableAttribute()]
+    [Serializable()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
     public partial class yml_catalogShopCurrenciesCurrency
@@ -226,7 +226,7 @@ namespace WindowsFormsApplication1
     }
 
     /// <remarks/>
-    [System.SerializableAttribute()]
+    [Serializable()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
     public partial class yml_catalogShopCategory
@@ -266,7 +266,7 @@ namespace WindowsFormsApplication1
     }
 
     /// <remarks/>
-    [System.SerializableAttribute()]
+    [Serializable()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
     public partial class yml_catalogShopOffer
@@ -488,7 +488,7 @@ namespace WindowsFormsApplication1
     }
 
     /// <remarks/>
-    [System.SerializableAttribute()]
+    [Serializable()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
     public partial class yml_catalogShopOfferParam

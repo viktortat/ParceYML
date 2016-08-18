@@ -13,7 +13,7 @@ using System.Xml;
 using System.Diagnostics;
 using OfficeOpenXml.Style;
 
-namespace WindowsFormsApplication1
+namespace ParceYmlApp
 {
     public partial class frmMain : Form
     {

@@ -34,7 +34,7 @@
             this.txbPathSelector = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.button2 = new System.Windows.Forms.Button();
-            this.button3 = new System.Windows.Forms.Button();
+            this.btnParce2 = new System.Windows.Forms.Button();
             this.chbCopyToDB = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
@@ -78,7 +78,6 @@
             this.txbPathSelector.Name = "txbPathSelector";
             this.txbPathSelector.Size = new System.Drawing.Size(286, 20);
             this.txbPathSelector.TabIndex = 16;
-
             // 
             // label2
             // 
@@ -100,15 +99,15 @@
             this.button2.UseVisualStyleBackColor = true;
             this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
-            // button3
+            // btnParce2
             // 
-            this.button3.Location = new System.Drawing.Point(7, 95);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(401, 28);
-            this.button3.TabIndex = 19;
-            this.button3.Text = "Разбор2";
-            this.button3.UseVisualStyleBackColor = true;
-            this.button3.Click += new System.EventHandler(this.button3_Click);
+            this.btnParce2.Location = new System.Drawing.Point(7, 95);
+            this.btnParce2.Name = "btnParce2";
+            this.btnParce2.Size = new System.Drawing.Size(401, 28);
+            this.btnParce2.TabIndex = 19;
+            this.btnParce2.Text = "Разбор2";
+            this.btnParce2.UseVisualStyleBackColor = true;
+            this.btnParce2.Click += new System.EventHandler(this.btnParce2_Click);
             // 
             // chbCopyToDB
             // 
@@ -121,7 +120,6 @@
             this.chbCopyToDB.TabIndex = 20;
             this.chbCopyToDB.Text = "Записать в БД";
             this.chbCopyToDB.UseVisualStyleBackColor = true;
-            
             // 
             // frmMain
             // 
@@ -129,7 +127,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(411, 130);
             this.Controls.Add(this.chbCopyToDB);
-            this.Controls.Add(this.button3);
+            this.Controls.Add(this.btnParce2);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.btnSelFile);
             this.Controls.Add(this.txbPathSelector);
@@ -153,7 +151,7 @@
         private System.Windows.Forms.TextBox txbPathSelector;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Button button2;
-        private System.Windows.Forms.Button button3;
+        private System.Windows.Forms.Button btnParce2;
         private System.Windows.Forms.CheckBox chbCopyToDB;
     }
 }

@@ -41,9 +41,9 @@
             // 
             this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.button1.Location = new System.Drawing.Point(8, 73);
+            this.button1.Location = new System.Drawing.Point(4, 76);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(333, 23);
+            this.button1.Size = new System.Drawing.Size(342, 23);
             this.button1.TabIndex = 0;
             this.button1.Text = "Разбор";
             this.button1.UseVisualStyleBackColor = true;
@@ -95,9 +95,9 @@
             // 
             this.button2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.button2.Location = new System.Drawing.Point(13, 271);
+            this.button2.Location = new System.Drawing.Point(4, 134);
             this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(333, 23);
+            this.button2.Size = new System.Drawing.Size(342, 23);
             this.button2.TabIndex = 18;
             this.button2.Text = "Формирование Pricat";
             this.button2.UseVisualStyleBackColor = true;
@@ -107,9 +107,9 @@
             // 
             this.button3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.button3.Location = new System.Drawing.Point(8, 138);
+            this.button3.Location = new System.Drawing.Point(4, 105);
             this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(333, 23);
+            this.button3.Size = new System.Drawing.Size(342, 23);
             this.button3.TabIndex = 19;
             this.button3.Text = "Разбор2";
             this.button3.UseVisualStyleBackColor = true;
@@ -119,7 +119,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(349, 298);
+            this.ClientSize = new System.Drawing.Size(349, 169);
             this.Controls.Add(this.button3);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.btnSelFile);

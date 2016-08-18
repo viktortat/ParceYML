@@ -321,27 +321,27 @@ namespace WindowsFormsApplication1
             */
 
             var brandArr = root.SelectNodes("/yml_catalog/shop/offers/offer/param[@name='Бренд']")
-                    .Cast<XmlNode>()
-                    .Select(x => new
-                    {
-                        brand = x.InnerText
-                    }).OrderBy(x => x.brand).Distinct();
+                .Cast<XmlNode>()
+                .Select(x => new
+                {
+                    brand = x.InnerText
+                }).OrderBy(x => x.brand).Distinct();
 
             var factoryArr = root.SelectNodes("/yml_catalog/shop/offers/offer/param[@name='Производитель']")
-                    .Cast<XmlNode>()
-                    .Select(x => new
-                    {
-                        factory = x.InnerText
-                        ,country = x.ParentNode["country"]?.InnerText??""
-                    }).OrderBy(x => x.factory).Distinct();
+                .Cast<XmlNode>()
+                .Select(x => new
+                {
+                    factory = x.InnerText
+                    ,country = x.ParentNode["country"]?.InnerText??""
+                }).OrderBy(x => x.factory).Distinct();
 
             var CategoriesColl = root.SelectNodes("/yml_catalog/shop/categories/category")
-                                     .Cast<XmlNode>().Select(x => new
-                                     {
-                                         id = x.Attributes["id"].InnerText,
-                                         parentId = x.Attributes["parentId"]?.InnerText ?? "",
-                                         Name = x.InnerText
-                                     });
+                .Cast<XmlNode>().Select(x => new
+                {
+                    id = x.Attributes["id"].InnerText,
+                    parentId = x.Attributes["parentId"]?.InnerText ?? "",
+                    Name = x.InnerText
+                });
 
 
             var file = new FileInfo(outputDir + '\\' + fileName);

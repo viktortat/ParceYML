@@ -272,10 +272,6 @@ namespace ParceYmlApp
                     ws.Cells[cRow, 8].Value = isbn["categoryId"].InnerText;
 
                     cRow++;
-                    //Console.WriteLine(isbn.Attributes["id"].InnerText);
-                    //Console.WriteLine(isbn["url"].InnerText);
-                    //Console.WriteLine(isbn["price"].InnerText);
-                    //Console.WriteLine("----------------------------------");
                 }
                 package.SaveAs(file);
 

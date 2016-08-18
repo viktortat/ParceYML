@@ -288,6 +288,8 @@ namespace WindowsFormsApplication1
         {
             XmlDocument doc = new XmlDocument();
             string FileName = @"d:\5552\soap.xml";
+            //Program.PathExcelFileImport
+
             doc.Load(FileName);
             XmlElement root = doc.DocumentElement;
             //XmlNodeList 
@@ -356,8 +358,7 @@ namespace WindowsFormsApplication1
                 int cRowCat = 2;
                 int cRowFact = 2;
                 int cRowBrand = 2;
-
-
+                
                 Color clrHead = Color.LightSkyBlue;
 
                 SetHeader(ws4.Cells[1, 1], clrHead, "id");

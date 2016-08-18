@@ -9,6 +9,7 @@ namespace ParceYmlApp
     static class Program
     {
         public static string PathExcelFileImport { get; internal set; }
+        public static string connectionStr { get; set; }
 
         /// <summary>
         /// The main entry point for the application.

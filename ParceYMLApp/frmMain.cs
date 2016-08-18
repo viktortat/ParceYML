@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Configuration;
 using System.Data;
 using System.Drawing;
 using System.IO;
@@ -283,12 +284,10 @@ namespace ParceYmlApp
         private void button3_Click(object sender, EventArgs e)
         {
             XmlDocument doc = new XmlDocument();
-            string FileName = @"d:\5552\soap.xml";
-            //Program.PathExcelFileImport
+            string FileName = Program.PathExcelFileImport;
 
             doc.Load(FileName);
             XmlElement root = doc.DocumentElement;
-            //XmlNodeList 
             var nodeList = root.SelectNodes("/yml_catalog/shop/offers/offer")
                 .Cast<XmlNode>()
                 /*
@@ -300,6 +299,7 @@ namespace ParceYmlApp
                 */
                 .OrderBy(r => r["name"].InnerText);
 
+            if (chbCopyToDB.Checked) BulkСopyToDB(root);
 
             string fileName = Path.GetFileNameWithoutExtension(FileName) + ".xlsx";
             string outputDir = Path.GetDirectoryName(FileName);
@@ -508,11 +508,25 @@ namespace ParceYmlApp
             }
         }
 
+        private void BulkСopyToDB(XmlElement root)
+        {
+            throw new NotImplementedException();
+        }
+
         private static void SetHeader(ExcelRange rg, Color clr, string val)
         {
             rg.Style.Fill.PatternType = ExcelFillStyle.Solid;
             rg.Style.Fill.BackgroundColor.SetColor(clr);
             rg.Value = val;
         }
+
+        private void frmMain_Load(object sender, EventArgs e)
+        {
+            Program.connectionStr = Program.connectionStr = ConfigurationManager.ConnectionStrings["TbnProd.Local"].ConnectionString;
+            Program.PathExcelFileImport = AppDomain.CurrentDomain.BaseDirectory + @"testXml\soap.xml";
+            txbPathSelector.Text = Program.PathExcelFileImport;
+        }
+
+
     }
 }

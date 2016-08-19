@@ -552,6 +552,8 @@ namespace ParceYmlApp
 
         private void BulkСopyToDB(XmlElement root)
         {
+
+
             var nodeList = GetOffer(root);
 
             var brandArr = GetBrandColl(root);
@@ -561,6 +563,9 @@ namespace ParceYmlApp
             var CategoriesColl = GetCategoriesColl(root);
 
             var DT = new DataTable();
+
+
+            return;//Пока не понятно что и как...
 
             List<Item> MainTableColl = new List<Item>
             {

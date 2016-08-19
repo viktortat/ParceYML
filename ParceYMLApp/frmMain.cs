@@ -397,8 +397,7 @@ namespace ParceYmlApp
 
                 //ws.Cells[1, 10].Value = "country_of_origin";
                 //ws.Cells[1, 11].Value = "barcode";
-
-
+                
                 var startCol = 14;
 
                 foreach (XmlNode isbn in nodeList)

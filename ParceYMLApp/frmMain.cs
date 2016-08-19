@@ -585,13 +585,13 @@ namespace ParceYmlApp
             using (var connection = new SqlConnection(Program.connectionStr))
             {
                 connection.Open();
-
+                /*
                 var tSQL = "truncate table tmp_YML2";
                 var cmd = new SqlCommand(tSQL, connection);
                 cmd.CommandType = CommandType.Text;
                 cmd.Connection = connection;
                 cmd.ExecuteNonQuery();
-
+                */
                 using (var bulkCopy = new SqlBulkCopy(connection))
                 {
                     //TODO Доделать заливку

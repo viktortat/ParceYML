@@ -494,8 +494,7 @@ namespace ParceYmlApp
                 Process.Start(file.FullName);
             }
         }
-
-
+        
         private static void SetCellHeader(ExcelRange rg, Color clr, string val)
         {
             rg.Style.Fill.PatternType = ExcelFillStyle.Solid;
@@ -503,8 +502,7 @@ namespace ParceYmlApp
             rg.Value = val;
         }
 
-
-        private static IEnumerable<Category> GetCategoriesColl(XmlElement root)
+        private static IEnumerable<Category> GetCategoriesColl_old(XmlElement root)
         {
             return root.SelectNodes("/yml_catalog/shop/categories/category")
                 .Cast<XmlNode>().Select(x => new Category
@@ -513,6 +511,32 @@ namespace ParceYmlApp
                     parentId = x.Attributes["parentId"]?.InnerText ?? "",
                     Name = x.InnerText
                 });
+        }
+
+        private static IEnumerable<Category> GetCategoriesColl(XmlElement root)
+        {
+
+            var tCat = root.SelectNodes("/yml_catalog/shop/categories/category")
+                .Cast<XmlNode>().Select(x => new
+                {
+                    id = x.Attributes["id"].InnerText,
+                    parentId = x.Attributes["parentId"]?.InnerText ?? "",
+                    Name = x.InnerText
+                });
+
+            var catReturn = tCat.Select(x => new Category
+                {
+                    parentId = x.parentId,
+                    id = x.id,
+                    Name = x.Name,
+                    NameNew = "",
+                    ParentName = tCat.Where(c => c.id == x.parentId)
+                        .Select(c => x.Name)
+                        .FirstOrDefault(),
+                    idInDB = ""
+                }
+            );
+            return catReturn;
         }
 
         private static IEnumerable<Manufacture> GetManufacturerColl(XmlElement root)
@@ -585,7 +609,7 @@ namespace ParceYmlApp
             };
 
             //CategoriesColl.Where(x => x.id == isbn["categoryId"].InnerText).Select(x => x.Name).FirstOrDefault();
-    
+
 
             using (var connection = new SqlConnection(Program.connectionStr))
             {
@@ -604,27 +628,17 @@ namespace ParceYmlApp
             }
         }
 
-        public class Item
-        {
-            public int id { get; set; }
-            public string Name { get; set; }
-        }
-        public class Category
-        {
-            public string id { get; set; }
-            public string parentId { get; set; }
-            public string Name { get; set; }
-        }
 
-        public class Brand
-        {
-            public string brand { get; set; }
-        }
 
-        public class Manufacture
+        private void button3_Click(object sender, EventArgs e)
         {
-            public string factory { get; set; }
-            public string country { get; set; }
+            XmlDocument doc = new XmlDocument();
+            string FileName = Program.PathExcelFileImport;
+
+            doc.Load(FileName);
+            XmlElement root = doc.DocumentElement;
+            var coll = GetCategoriesColl(root);
+            dataGridView1.DataSource=SqlHelper.ToDataTable(coll.ToList());
         }
     }
 }

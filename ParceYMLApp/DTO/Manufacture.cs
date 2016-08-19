@@ -2,7 +2,7 @@
 {
     public class Manufacture
     {
-        public string factory { get; set; }
+        public string Name { get; set; }
         public string country { get; set; }
     }
 }

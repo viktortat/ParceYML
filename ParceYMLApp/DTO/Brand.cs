@@ -2,6 +2,9 @@
 {
     public class Brand
     {
-        public string brand { get; set; }
+        public string brandCode { get; set; }
+        public string country { get; set; }
+        public string brandName { get; set; }
+        public string brandNewName { get; set; }
     }
 }

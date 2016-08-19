@@ -38,6 +38,7 @@
             this.chbCopyToDB = new System.Windows.Forms.CheckBox();
             this.button3 = new System.Windows.Forms.Button();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.label3 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -108,7 +109,7 @@
             this.btnParce2.Name = "btnParce2";
             this.btnParce2.Size = new System.Drawing.Size(401, 28);
             this.btnParce2.TabIndex = 19;
-            this.btnParce2.Text = "Разбор2";
+            this.btnParce2.Text = "Разбор в Excel";
             this.btnParce2.UseVisualStyleBackColor = true;
             this.btnParce2.Click += new System.EventHandler(this.btnParce2_Click);
             // 
@@ -140,16 +141,26 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Location = new System.Drawing.Point(7, 129);
+            this.dataGridView1.Location = new System.Drawing.Point(7, 152);
             this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.Size = new System.Drawing.Size(401, 321);
+            this.dataGridView1.Size = new System.Drawing.Size(401, 298);
             this.dataGridView1.TabIndex = 22;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(178, 130);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(16, 13);
+            this.label3.TabIndex = 23;
+            this.label3.Text = "...";
             // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(411, 462);
+            this.Controls.Add(this.label3);
             this.Controls.Add(this.dataGridView1);
             this.Controls.Add(this.button3);
             this.Controls.Add(this.chbCopyToDB);
@@ -182,6 +193,7 @@
         private System.Windows.Forms.CheckBox chbCopyToDB;
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.DataGridView dataGridView1;
+        private System.Windows.Forms.Label label3;
     }
 }
 

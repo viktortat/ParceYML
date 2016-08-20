@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Reflection;
 using LinqToExcel;
+using Remotion.Data.Linq.Clauses;
 
 namespace ConsoleApplication1
 {
@@ -14,22 +16,36 @@ namespace ConsoleApplication1
 
         static void Main(string[] args)
         {
-//            №	Название НазваниеTBN Страна
+            //            №	Название НазваниеTBN Страна
 
 
-         var eFilePath = @"c:\333\ParceYML\soap.xlsx";
+            var eFilePath = @"c:\333\ParceYML\soap.xlsx";
             var excel = new ExcelQueryFactory(eFilePath);
             var i = 1;
-            var oldCompanies = from c in excel.Worksheet<Brand>("Бренды") //worksheet name = 'US Companies'
-                               //where c.LaunchDate < new DateTime(1900, 1, 1)
-                               select new
-                               {
-                                   c.Nom,
-                                   c.Name,
-                                   c.NameTbn,
-                                   c.country
-                               };
-            DataTable dt = ToDataTable(oldCompanies.ToList());
+            var oldCompanies = from c in excel.Worksheet<Brand>("Бренды")
+                //worksheet name = 'US Companies'
+                //where c.LaunchDate < new DateTime(1900, 1, 1)
+                select new
+                {
+                    c.Nom,
+                    c.Name,
+                    c.NameTbn,
+                    c.country
+                };
+            var oldCompanies2 = excel.Worksheet<Brand>("Бренды").AsEnumerable()
+                .Select((c, index) => new
+                {
+                    index,
+                    c.Nom,
+                    c.Name,
+                    c.NameTbn,
+                    c.country
+                }).Where(b => b.index > 0);
+
+            var result = excel.Worksheet<Brand>("Бренды").AsEnumerable()
+                .Select((x, index) => new {index, x.Name, x.Nom});
+
+            DataTable dt = ToDataTable(oldCompanies2.ToList());
         }
 
 
@@ -39,23 +55,35 @@ namespace ConsoleApplication1
             PropertyInfo[] Props = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance);
             foreach (PropertyInfo prop in Props)
             {
-                dataTable.Columns.Add(prop.Name);//Setting column names as Property names
+                dataTable.Columns.Add(prop.Name); //Setting column names as Property names
             }
             foreach (T item in items)
             {
                 var values = new object[Props.Length];
                 for (int i = 0; i < Props.Length; i++)
                 {
-                    values[i] = Props[i].GetValue(item, null);//inserting property values to datatable rows
+                    values[i] = Props[i].GetValue(item, null); //inserting property values to datatable rows
                 }
                 dataTable.Rows.Add(values);
             }
             return dataTable;
         }
 
+        /*
+        //int index = cars.FindIndex(c => c.ID == 150);
+        public static int FindIndex<T>(this IEnumerable<T> items, Predicate<T> predicate)
+        {
+            int index = 0;
+            foreach (var item in items)
+            {
+                if (predicate(item)) break;
+                index++;
+            }
+            return index;
+        }
+        */
     }
 
-
-
-
 }
+
+

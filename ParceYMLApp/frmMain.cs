@@ -323,36 +323,41 @@ namespace ParceYmlApp
             using (ExcelPackage package = new ExcelPackage())
             {
                 ExcelWorksheet ws = package.Workbook.Worksheets.Add("Распарсен");
-                ExcelWorksheet ws2 = package.Workbook.Worksheets.Add("Категории");
-                ExcelWorksheet ws3 = package.Workbook.Worksheets.Add("Фильтры");
-                ExcelWorksheet ws4 = package.Workbook.Worksheets.Add("Производители");
-                ExcelWorksheet ws5 = package.Workbook.Worksheets.Add("Бренды");
+                ExcelWorksheet wsCatigoty = package.Workbook.Worksheets.Add("Категории");
+                ExcelWorksheet wsParam = package.Workbook.Worksheets.Add("Фильтры");
+                ExcelWorksheet wsManuf = package.Workbook.Worksheets.Add("Производители");
+                ExcelWorksheet wsBrand = package.Workbook.Worksheets.Add("Бренды");
 
                 int cRow = 2;
                 int cRowAtr = 2;
                 int cRowCat = 2;
-                int cRowFact = 2;
+                int cRowManuf = 2;
                 int cRowBrand = 2;
 
                 Color clrHead = Color.LightSkyBlue;
 
-                SetCellHeader(ws4.Cells[1, 1], clrHead, "id");
-                SetCellHeader(ws4.Cells[1, 2], clrHead, "Название");
+                SetCellHeader(wsManuf.Cells[1, 1], clrHead, "№");
+                SetCellHeader(wsManuf.Cells[1, 2], clrHead, "Название");
+                SetCellHeader(wsManuf.Cells[1, 3], clrHead, "НазваниеTBN");
+                SetCellHeader(wsManuf.Cells[1, 4], clrHead, "Страна");
 
-                SetCellHeader(ws5.Cells[1, 1], clrHead, "id");
-                SetCellHeader(ws5.Cells[1, 2], clrHead, "Название");
+                SetCellHeader(wsBrand.Cells[1, 1], clrHead, "№");
+                //SetCellHeader(wsBrand.Cells[1, 2], clrHead, "КодБренда");
+                SetCellHeader(wsBrand.Cells[1, 2], clrHead, "Название");
+                SetCellHeader(wsBrand.Cells[1, 3], clrHead, "НазваниеTBN");
+                SetCellHeader(wsBrand.Cells[1, 4], clrHead, "Страна");
 
-                SetCellHeader(ws3.Cells[1, 1], clrHead, "id");
-                SetCellHeader(ws3.Cells[1, 2], clrHead, "Название");
-                SetCellHeader(ws3.Cells[1, 3], clrHead, "НазваниеTBN");
-                SetCellHeader(ws3.Cells[1, 4], clrHead, "Type");
+                SetCellHeader(wsParam.Cells[1, 1], clrHead, "id");
+                SetCellHeader(wsParam.Cells[1, 2], clrHead, "Название");
+                SetCellHeader(wsParam.Cells[1, 3], clrHead, "НазваниеTBN");
+                SetCellHeader(wsParam.Cells[1, 4], clrHead, "Type");
 
-                SetCellHeader(ws2.Cells[1, 1], clrHead, "id");
-                SetCellHeader(ws2.Cells[1, 2], clrHead, "parentId");
-                SetCellHeader(ws2.Cells[1, 3], clrHead, "parentName");
-                SetCellHeader(ws2.Cells[1, 4], clrHead, "Name");
-                SetCellHeader(ws2.Cells[1, 5], clrHead, "НашId");
-                SetCellHeader(ws2.Cells[1, 6], clrHead, "НашаКатегория");
+                SetCellHeader(wsCatigoty.Cells[1, 1], clrHead, "id");
+                SetCellHeader(wsCatigoty.Cells[1, 2], clrHead, "parentId");
+                SetCellHeader(wsCatigoty.Cells[1, 3], clrHead, "parentName");
+                SetCellHeader(wsCatigoty.Cells[1, 4], clrHead, "Name");
+                SetCellHeader(wsCatigoty.Cells[1, 5], clrHead, "НашId");
+                SetCellHeader(wsCatigoty.Cells[1, 6], clrHead, "НашаКатегория");
 
                 SetCellHeader(ws.Cells[1, 1], clrHead, "available");
                 SetCellHeader(ws.Cells[1, 2], clrHead, "id");
@@ -368,36 +373,48 @@ namespace ParceYmlApp
                 SetCellHeader(ws.Cells[1, 12], clrHead, "description");
                 SetCellHeader(ws.Cells[1, 13], clrHead, "picture");
 
+                var cRowNom = 1;
                 foreach (var item in ManufactureArr)
                 {
-                    ws4.Cells[cRowFact, 1].Value = item.factory;
-                    ws4.Cells[cRowFact, 2].Value = item.country;
-                    cRowFact++;
+                    wsManuf.Cells[cRowManuf, 1].Value = cRowNom;
+                    //wsManuf.Cells[cRowManuf, 2].Value = item.Name;
+                    SetCellHeader(wsManuf.Cells[cRowManuf, 2], Color.LightGray, item.Name);
+                    wsManuf.Cells[cRowManuf, 3].Value = item.Name;
+                    wsManuf.Cells[cRowManuf, 4].Value = item.country;
+                    cRowNom++;
+                    cRowManuf++;
                 }
 
-                var cR = 1;
-                foreach (var item in brandArr)
+                cRowNom = 1;
+                foreach (Brand item in brandArr)
                 {
-                    ws5.Cells[cRowBrand, 1].Value = cR;
-                    ws5.Cells[cRowBrand, 2].Value = item.brand;
-                    cR++;
+                    wsBrand.Cells[cRowBrand, 1].Value = cRowNom;
+                    //wsBrand.Cells[cRowBrand, 2].Value = item.brandCode;
+                    //ws5.Cells[cRowBrand, 3].Value = item.brandName;
+                    SetCellHeader(wsBrand.Cells[cRowBrand, 2], Color.LightGray, item.brandName);
+                    wsBrand.Cells[cRowBrand, 3].Value = item.brandName;
+                    wsBrand.Cells[cRowBrand, 4].Value = item.country;
+                    cRowNom++;
                     cRowBrand++;
                 }
 
 
                 foreach (var item in CategoriesColl)
                 {
-                    ws2.Cells[cRowCat, 1].Value = item.id;
-                    ws2.Cells[cRowCat, 2].Value = item.parentId;
-                    ws2.Cells[cRowCat, 3].Value =
+                    wsCatigoty.Cells[cRowCat, 1].Value = item.id;
+                    wsCatigoty.Cells[cRowCat, 2].Value = item.parentId;
+                    wsCatigoty.Cells[cRowCat, 3].Value =
                         CategoriesColl.Where(x => x.id == item.parentId).Select(x => x.Name).FirstOrDefault();
-                    ws2.Cells[cRowCat, 4].Value = item.Name;
+                    wsCatigoty.Cells[cRowCat, 4].Value = item.Name;
+                    SetCellHeader(wsCatigoty.Cells[cRowCat, 5], Color.LightGoldenrodYellow, "");
+                    //SetCellHeader(wsCatigoty.Cells[cRowCat, 6], Color.LightGoldenrodYellow, "");
                     cRowCat++;
                 }
 
                 //ws.Cells[1, 10].Value = "country_of_origin";
                 //ws.Cells[1, 11].Value = "barcode";
-                
+
+
                 var startCol = 14;
 
                 foreach (XmlNode isbn in nodeList)
@@ -424,17 +441,18 @@ namespace ParceYmlApp
                 foreach (var item in d)
                 {
                     SetCellHeader(ws.Cells[1, item.Val], Color.LightBlue, item.Name);
-                    ws3.Cells[cRowAtr, 1].Value = item.Val;
-                    ws3.Cells[cRowAtr, 2].Value = item.Name;
-                    ws3.Cells[cRowAtr, 3].Value = item.Name;
-                    ws3.Cells[cRowAtr, 4].Value = "f";
+                    wsParam.Cells[cRowAtr, 1].Value = item.Val;
+                    //wsParam.Cells[cRowAtr, 2].Value = item.Name;
+                    SetCellHeader(wsParam.Cells[cRowAtr, 2], Color.LightGray, item.Name);
+                    wsParam.Cells[cRowAtr, 3].Value = item.Name;
+                    wsParam.Cells[cRowAtr, 4].Value = "f";
                     cRowAtr++;
                 }
 
-                ws3.Cells[4, 7].Value = "f - затягиваем в фильтры";
-                ws3.Cells[5, 7].Value = "v - затягиваем в ВГХ";
-                ws3.Cells[6, 7].Value = "fv - затягиваем в фильтры и в ВГХ";
-                ws3.Cells[7, 7].Value = "n - не затягивать";
+                wsParam.Cells[4, 7].Value = "f - затягиваем в фильтры";
+                wsParam.Cells[5, 7].Value = "v - затягиваем в ВГХ";
+                wsParam.Cells[6, 7].Value = "fv - затягиваем в фильтры и в ВГХ";
+                wsParam.Cells[7, 7].Value = "n - не затягивать";
 
                 foreach (XmlNode isbn in nodeList)
                 {
@@ -477,23 +495,22 @@ namespace ParceYmlApp
 
                 ws.Cells[ws.Dimension.Address].AutoFilter = true;
 
-                ws2.Cells[ws2.Dimension.Address].AutoFilter = true;
-                ws2.Cells[ws2.Dimension.Address].AutoFitColumns();
+                wsCatigoty.Cells[wsCatigoty.Dimension.Address].AutoFilter = true;
+                wsCatigoty.Cells[wsCatigoty.Dimension.Address].AutoFitColumns();
 
-                ws3.Cells[ws3.Dimension.Address].AutoFilter = true;
-                ws3.Cells[ws3.Dimension.Address].AutoFitColumns();
+                wsParam.Cells[wsParam.Dimension.Address].AutoFilter = true;
+                wsParam.Cells[wsParam.Dimension.Address].AutoFitColumns();
 
-                ws4.Cells[ws4.Dimension.Address].AutoFilter = true;
-                ws4.Cells[ws4.Dimension.Address].AutoFitColumns();
+                wsManuf.Cells[wsManuf.Dimension.Address].AutoFilter = true;
+                wsManuf.Cells[wsManuf.Dimension.Address].AutoFitColumns();
 
-                ws5.Cells[ws5.Dimension.Address].AutoFilter = true;
-                ws5.Cells[ws5.Dimension.Address].AutoFitColumns();
+                wsBrand.Cells[wsBrand.Dimension.Address].AutoFilter = true;
+                wsBrand.Cells[wsBrand.Dimension.Address].AutoFitColumns();
 
                 package.SaveAs(file);
                 Process.Start(file.FullName);
             }
         }
-
 
         private static void SetCellHeader(ExcelRange rg, Color clr, string val)
         {
@@ -502,8 +519,7 @@ namespace ParceYmlApp
             rg.Value = val;
         }
 
-
-        private static IEnumerable<Category> GetCategoriesColl(XmlElement root)
+        private static IEnumerable<Category> GetCategoriesColl_old(XmlElement root)
         {
             return root.SelectNodes("/yml_catalog/shop/categories/category")
                 .Cast<XmlNode>().Select(x => new Category
@@ -514,25 +530,30 @@ namespace ParceYmlApp
                 });
         }
 
-        private static IEnumerable<Manufacture> GetManufacturerColl(XmlElement root)
+        private static IEnumerable<Category> GetCategoriesColl(XmlElement root)
         {
-            return root.SelectNodes("/yml_catalog/shop/offers/offer/param[@name='Производитель']")
-                .Cast<XmlNode>()
-                .Select(x => new Manufacture
-                {
-                    factory = x.InnerText,
-                    country = x.ParentNode["country"]?.InnerText ?? ""
-                }).OrderBy(x => x.factory).Distinct();
-        }
 
-        private static IEnumerable<Brand> GetBrandColl(XmlElement root)
-        {
-            return root.SelectNodes("/yml_catalog/shop/offers/offer/param[@name='Бренд']")
-                .Cast<XmlNode>()
-                .Select(x => new Brand
+            var tCat = root.SelectNodes("/yml_catalog/shop/categories/category")
+                .Cast<XmlNode>().Select(x => new
                 {
-                    brand = x.InnerText
-                }).OrderBy(x => x.brand).Distinct();
+                    id = x.Attributes["id"].InnerText,
+                    parentId = x.Attributes["parentId"]?.InnerText ?? "",
+                    Name = x.InnerText
+                });
+
+            var catReturn = tCat.Select(x => new Category
+            {
+                parentId = x.parentId,
+                id = x.id,
+                Name = x.Name,
+                NameNew = "",
+                ParentName = tCat.Where(c => c.id == x.parentId)
+                        .Select(c => x.Name)
+                        .FirstOrDefault(),
+                idInDB = ""
+            }
+            );
+            return catReturn;
         }
 
         private static IEnumerable<XmlNode> GetOffer(XmlElement root)
@@ -551,6 +572,8 @@ namespace ParceYmlApp
 
         private void BulkСopyToDB(XmlElement root)
         {
+
+
             var nodeList = GetOffer(root);
 
             var brandArr = GetBrandColl(root);
@@ -560,6 +583,9 @@ namespace ParceYmlApp
             var CategoriesColl = GetCategoriesColl(root);
 
             var DT = new DataTable();
+
+
+            return;//Пока не понятно что и как...
 
             List<Item> MainTableColl = new List<Item>
             {
@@ -579,18 +605,18 @@ namespace ParceYmlApp
             };
 
             //CategoriesColl.Where(x => x.id == isbn["categoryId"].InnerText).Select(x => x.Name).FirstOrDefault();
-    
+
 
             using (var connection = new SqlConnection(Program.connectionStr))
             {
                 connection.Open();
-
+                /*
                 var tSQL = "truncate table tmp_YML2";
                 var cmd = new SqlCommand(tSQL, connection);
                 cmd.CommandType = CommandType.Text;
                 cmd.Connection = connection;
                 cmd.ExecuteNonQuery();
-
+                */
                 using (var bulkCopy = new SqlBulkCopy(connection))
                 {
                     //TODO Доделать заливку
@@ -598,27 +624,60 @@ namespace ParceYmlApp
             }
         }
 
-        public class Item
+
+
+        private void button3_Click(object sender, EventArgs e)
         {
-            public int id { get; set; }
-            public string Name { get; set; }
-        }
-        public class Category
-        {
-            public string id { get; set; }
-            public string parentId { get; set; }
-            public string Name { get; set; }
+            XmlDocument doc = new XmlDocument();
+            string FileName = Program.PathExcelFileImport;
+
+            doc.Load(FileName);
+            XmlElement root = doc.DocumentElement;
+            //var coll = GetCategoriesColl(root);
+            //var coll = GetBrandColl(root);
+            var coll = GetManufacturerColl(root);
+            label3.Text = $"Выбрано - {coll.Count()} строк";
+            dataGridView1.DataSource = SqlHelper.ToDataTable(coll.ToList());
         }
 
-        public class Brand
+        private static IEnumerable<Brand> GetBrandColl(XmlElement root)
         {
-            public string brand { get; set; }
+            var random = new Random((int)DateTime.Now.Ticks);
+            var s = DateTime.Now.ToString("yyyyMMdd");
+
+            var ret = root.SelectNodes("/yml_catalog/shop/offers/offer/param[@name='Бренд']")
+                .Cast<XmlNode>()
+                .Select(x => new
+                {
+                    brandName = x.InnerText,
+                    //country = x.ParentNode["country"]?.InnerText ?? ""
+                }).Distinct().OrderBy(x => x.brandName);
+
+            var ret1 = ret.Select(x => new Brand
+            {
+                brandName = x.brandName
+                //,brandCode = s + random.Next(1000, 9999),
+            });
+
+            return ret1;
         }
 
-        public class Manufacture
+        private static IEnumerable<Manufacture> GetManufacturerColl(XmlElement root)
         {
-            public string factory { get; set; }
-            public string country { get; set; }
+            var ret = root.SelectNodes("/yml_catalog/shop/offers/offer/param[@name='Производитель']")
+                .Cast<XmlNode>()
+                .Select(x => new
+                {
+                    factory = x.InnerText
+                    //country = x.ParentNode["country"]?.InnerText ?? ""
+                }).OrderBy(x => x.factory).Distinct();
+
+            var ret1 = ret.Select(x => new Manufacture
+            {
+                Name = x.factory
+            }).OrderBy(f => f.Name);
+            return ret1;
+
         }
     }
 }

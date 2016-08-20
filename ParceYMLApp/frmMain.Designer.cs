@@ -36,6 +36,10 @@
             this.button2 = new System.Windows.Forms.Button();
             this.btnParce2 = new System.Windows.Forms.Button();
             this.chbCopyToDB = new System.Windows.Forms.CheckBox();
+            this.button3 = new System.Windows.Forms.Button();
+            this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.label3 = new System.Windows.Forms.Label();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
             // button1
@@ -105,7 +109,7 @@
             this.btnParce2.Name = "btnParce2";
             this.btnParce2.Size = new System.Drawing.Size(401, 28);
             this.btnParce2.TabIndex = 19;
-            this.btnParce2.Text = "Разбор2";
+            this.btnParce2.Text = "Разбор в Excel";
             this.btnParce2.UseVisualStyleBackColor = true;
             this.btnParce2.Click += new System.EventHandler(this.btnParce2_Click);
             // 
@@ -121,11 +125,44 @@
             this.chbCopyToDB.Text = "Записать в БД";
             this.chbCopyToDB.UseVisualStyleBackColor = true;
             // 
+            // button3
+            // 
+            this.button3.Location = new System.Drawing.Point(135, 68);
+            this.button3.Name = "button3";
+            this.button3.Size = new System.Drawing.Size(75, 23);
+            this.button3.TabIndex = 21;
+            this.button3.Text = "Test";
+            this.button3.UseVisualStyleBackColor = true;
+            this.button3.Click += new System.EventHandler(this.button3_Click);
+            // 
+            // dataGridView1
+            // 
+            this.dataGridView1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridView1.Location = new System.Drawing.Point(7, 152);
+            this.dataGridView1.Name = "dataGridView1";
+            this.dataGridView1.Size = new System.Drawing.Size(401, 298);
+            this.dataGridView1.TabIndex = 22;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(178, 130);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(16, 13);
+            this.label3.TabIndex = 23;
+            this.label3.Text = "...";
+            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(411, 130);
+            this.ClientSize = new System.Drawing.Size(411, 462);
+            this.Controls.Add(this.label3);
+            this.Controls.Add(this.dataGridView1);
+            this.Controls.Add(this.button3);
             this.Controls.Add(this.chbCopyToDB);
             this.Controls.Add(this.btnParce2);
             this.Controls.Add(this.button2);
@@ -138,6 +175,7 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Варианты разбора YML";
             this.Load += new System.EventHandler(this.frmMain_Load);
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -153,6 +191,9 @@
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Button btnParce2;
         private System.Windows.Forms.CheckBox chbCopyToDB;
+        private System.Windows.Forms.Button button3;
+        private System.Windows.Forms.DataGridView dataGridView1;
+        private System.Windows.Forms.Label label3;
     }
 }
 

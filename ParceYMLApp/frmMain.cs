@@ -328,50 +328,50 @@ namespace ParceYmlApp
                 ExcelWorksheet wsManuf = package.Workbook.Worksheets.Add("Производители");
                 ExcelWorksheet wsBrand = package.Workbook.Worksheets.Add("Бренды");
 
-                int cRow = 2;
-                int cRowAtr = 2;
-                int cRowCat = 2;
-                int cRowManuf = 2;
-                int cRowBrand = 2;
+                int cRow = 3;
+                int cRowAtr = 3;
+                int cRowCat = 3;
+                int cRowManuf = 3;
+                int cRowBrand = 3;
 
                 Color clrHead = Color.LightSkyBlue;
 
-                SetCellHeader(wsManuf.Cells[1, 1], clrHead, "№");
-                SetCellHeader(wsManuf.Cells[1, 2], clrHead, "Название");
-                SetCellHeader(wsManuf.Cells[1, 3], clrHead, "НазваниеTBN");
-                SetCellHeader(wsManuf.Cells[1, 4], clrHead, "Страна");
+                SetCellHeader(wsManuf.Cells[2, 1], clrHead, "№");
+                SetCellHeader(wsManuf.Cells[2, 2], clrHead, "Название");
+                SetCellHeader(wsManuf.Cells[2, 3], clrHead, "НазваниеTBN");
+                SetCellHeader(wsManuf.Cells[2, 4], clrHead, "Страна");
 
-                SetCellHeader(wsBrand.Cells[1, 1], clrHead, "№");
-                //SetCellHeader(wsBrand.Cells[1, 2], clrHead, "КодБренда");
-                SetCellHeader(wsBrand.Cells[1, 2], clrHead, "Название");
-                SetCellHeader(wsBrand.Cells[1, 3], clrHead, "НазваниеTBN");
-                SetCellHeader(wsBrand.Cells[1, 4], clrHead, "Страна");
+                SetCellHeader(wsBrand.Cells[2, 1], clrHead, "№");
+                //SetCellHeader(wsBrand.Cells[2, 2], clrHead, "КодБренда");
+                SetCellHeader(wsBrand.Cells[2, 2], clrHead, "Название");
+                SetCellHeader(wsBrand.Cells[2, 3], clrHead, "НазваниеTBN");
+                SetCellHeader(wsBrand.Cells[2, 4], clrHead, "Страна");
 
-                SetCellHeader(wsParam.Cells[1, 1], clrHead, "id");
-                SetCellHeader(wsParam.Cells[1, 2], clrHead, "Название");
-                SetCellHeader(wsParam.Cells[1, 3], clrHead, "НазваниеTBN");
-                SetCellHeader(wsParam.Cells[1, 4], clrHead, "Type");
+                SetCellHeader(wsParam.Cells[2, 1], clrHead, "id");
+                SetCellHeader(wsParam.Cells[2, 2], clrHead, "Название");
+                SetCellHeader(wsParam.Cells[2, 3], clrHead, "НазваниеTBN");
+                SetCellHeader(wsParam.Cells[2, 4], clrHead, "Type");
 
-                SetCellHeader(wsCatigoty.Cells[1, 1], clrHead, "id");
-                SetCellHeader(wsCatigoty.Cells[1, 2], clrHead, "parentId");
-                SetCellHeader(wsCatigoty.Cells[1, 3], clrHead, "parentName");
-                SetCellHeader(wsCatigoty.Cells[1, 4], clrHead, "Name");
-                SetCellHeader(wsCatigoty.Cells[1, 5], clrHead, "НашId");
-                SetCellHeader(wsCatigoty.Cells[1, 6], clrHead, "НашаКатегория");
+                SetCellHeader(wsCatigoty.Cells[2, 1], clrHead, "id");
+                SetCellHeader(wsCatigoty.Cells[2, 2], clrHead, "parentId");
+                SetCellHeader(wsCatigoty.Cells[2, 3], clrHead, "parentName");
+                SetCellHeader(wsCatigoty.Cells[2, 4], clrHead, "Name");
+                SetCellHeader(wsCatigoty.Cells[2, 5], clrHead, "НашId");
+                SetCellHeader(wsCatigoty.Cells[2, 6], clrHead, "НашаКатегория");
 
-                SetCellHeader(ws.Cells[1, 1], clrHead, "available");
-                SetCellHeader(ws.Cells[1, 2], clrHead, "id");
-                SetCellHeader(ws.Cells[1, 3], clrHead, "name");
-                SetCellHeader(ws.Cells[1, 4], clrHead, "url");
-                SetCellHeader(ws.Cells[1, 5], clrHead, "price");
-                SetCellHeader(ws.Cells[1, 6], clrHead, "currencyId");
-                SetCellHeader(ws.Cells[1, 7], clrHead, "categoryId");
-                SetCellHeader(ws.Cells[1, 8], clrHead, "categoryName");
-                SetCellHeader(ws.Cells[1, 9], clrHead, "delivery");
-                SetCellHeader(ws.Cells[1, 10], clrHead, "vendorCode");
-                SetCellHeader(ws.Cells[1, 11], clrHead, "vendor");
-                SetCellHeader(ws.Cells[1, 12], clrHead, "description");
-                SetCellHeader(ws.Cells[1, 13], clrHead, "picture");
+                SetCellHeader(ws.Cells[2, 1], clrHead, "available");
+                SetCellHeader(ws.Cells[2, 2], clrHead, "id");
+                SetCellHeader(ws.Cells[2, 3], clrHead, "name");
+                SetCellHeader(ws.Cells[2, 4], clrHead, "url");
+                SetCellHeader(ws.Cells[2, 5], clrHead, "price");
+                SetCellHeader(ws.Cells[2, 6], clrHead, "currencyId");
+                SetCellHeader(ws.Cells[2, 7], clrHead, "categoryId");
+                SetCellHeader(ws.Cells[2, 8], clrHead, "categoryName");
+                SetCellHeader(ws.Cells[2, 9], clrHead, "delivery");
+                SetCellHeader(ws.Cells[2, 10], clrHead, "vendorCode");
+                SetCellHeader(ws.Cells[2, 11], clrHead, "vendor");
+                SetCellHeader(ws.Cells[2, 12], clrHead, "description");
+                SetCellHeader(ws.Cells[2, 13], clrHead, "picture");
 
                 var cRowNom = 1;
                 foreach (var item in ManufactureArr)
@@ -440,7 +440,8 @@ namespace ParceYmlApp
 
                 foreach (var item in d)
                 {
-                    SetCellHeader(ws.Cells[1, item.Val], Color.LightBlue, item.Name);
+                    SetCellHeader(ws.Cells[2, item.Val], Color.LightBlue, item.Name);
+
                     wsParam.Cells[cRowAtr, 1].Value = item.Val;
                     //wsParam.Cells[cRowAtr, 2].Value = item.Name;
                     SetCellHeader(wsParam.Cells[cRowAtr, 2], Color.LightGray, item.Name);

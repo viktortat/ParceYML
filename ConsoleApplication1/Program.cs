@@ -10,15 +10,15 @@ namespace ConsoleApplication1
 {
     class Program
     {
-        //add linqtoexcel  https://github.com/paulyoder/LinqToExcel
-        //+https://www.microsoft.com/en-us/download/confirmation.aspx?id=23734
-        //https://www.microsoft.com/en-us/download/details.aspx?id=13255
+        
 
         static void Main(string[] args)
         {
-            //            №	Название НазваниеTBN Страна
 
-
+/*
+        //add linqtoexcel  https://github.com/paulyoder/LinqToExcel
+        //+https://www.microsoft.com/en-us/download/confirmation.aspx?id=23734
+        //https://www.microsoft.com/en-us/download/details.aspx?id=13255
             var eFilePath = @"c:\333\ParceYML\soap.xlsx";
             var excel = new ExcelQueryFactory(eFilePath);
             var i = 1;
@@ -46,6 +46,9 @@ namespace ConsoleApplication1
                 .Select((x, index) => new {index, x.Name, x.Nom});
 
             DataTable dt = ToDataTable(oldCompanies2.ToList());
+
+*/
+            //(DateTime.Now).Subtract(new DateTime(1970, 1, 1)).TotalSeconds
         }
 
 

@@ -39,6 +39,7 @@
             this.button3 = new System.Windows.Forms.Button();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.label3 = new System.Windows.Forms.Label();
+            this.button4 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -107,7 +108,7 @@
             // 
             this.btnParce2.Location = new System.Drawing.Point(7, 95);
             this.btnParce2.Name = "btnParce2";
-            this.btnParce2.Size = new System.Drawing.Size(401, 28);
+            this.btnParce2.Size = new System.Drawing.Size(203, 28);
             this.btnParce2.TabIndex = 19;
             this.btnParce2.Text = "Разбор в Excel";
             this.btnParce2.UseVisualStyleBackColor = true;
@@ -155,11 +156,22 @@
             this.label3.TabIndex = 23;
             this.label3.Text = "...";
             // 
+            // button4
+            // 
+            this.button4.Location = new System.Drawing.Point(216, 95);
+            this.button4.Name = "button4";
+            this.button4.Size = new System.Drawing.Size(192, 28);
+            this.button4.TabIndex = 24;
+            this.button4.Text = "Разбор в Excel";
+            this.button4.UseVisualStyleBackColor = true;
+            this.button4.Click += new System.EventHandler(this.button4_Click);
+            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(411, 462);
+            this.Controls.Add(this.button4);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.dataGridView1);
             this.Controls.Add(this.button3);
@@ -194,6 +206,7 @@
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.DataGridView dataGridView1;
         private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Button button4;
     }
 }
 

@@ -32,6 +32,7 @@ namespace ParceYmlApp
             Program.connectionStr =
                 Program.connectionStr = ConfigurationManager.ConnectionStrings["TbnProd.Local"].ConnectionString;
             Program.PathExcelFileImport = AppDomain.CurrentDomain.BaseDirectory + @"testXml\soap.xml";
+            Program.PathFolderBase = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"testXml");
             txbPathSelector.Text = Program.PathExcelFileImport;
         }
 
@@ -679,6 +680,30 @@ namespace ParceYmlApp
             }).OrderBy(f => f.Name);
             return ret1;
 
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            //Program.PathFolderBase
+            FileInfo existingFile = new FileInfo(AppDomain.CurrentDomain.BaseDirectory);
+            using (ExcelPackage package = new ExcelPackage(existingFile))
+            {
+                // get the first worksheet in the workbook
+                ExcelWorksheet worksheet = package.Workbook.Worksheets[1];
+                int col = 2; //The item description
+                             // output the data in column 2
+                for (int row = 2; row < 5; row++)
+                    Console.WriteLine("\tCell({0},{1}).Value={2}", row, col, worksheet.Cells[row, col].Value);
+
+                // output the formula in row 5
+                Console.WriteLine("\tCell({0},{1}).Formula={2}", 3, 5, worksheet.Cells[3, 5].Formula);
+                Console.WriteLine("\tCell({0},{1}).FormulaR1C1={2}", 3, 5, worksheet.Cells[3, 5].FormulaR1C1);
+
+                // output the formula in row 5
+                Console.WriteLine("\tCell({0},{1}).Formula={2}", 5, 3, worksheet.Cells[5, 3].Formula);
+                Console.WriteLine("\tCell({0},{1}).FormulaR1C1={2}", 5, 3, worksheet.Cells[5, 3].FormulaR1C1);
+
+            } // the using statement automatical
         }
     }
 }

@@ -43,18 +43,34 @@ namespace ParceYmlApp
             var FileNameOut = Path.GetFullPath(AppDomain.CurrentDomain.BaseDirectory + @"..\\..\\..\\" + fName);
             //var FileNameIn = Path.GetFileNameWithoutExtension(Program.PathExcelFileImport) + ".xlsx";
             var FileNameIn = @"c:\333\ParceYML\soap.xlsx";
+            DataTable dt = new DataTable();
 
             FileInfo existingFile = new FileInfo(FileNameIn);
             using (ExcelPackage package = new ExcelPackage(existingFile))
             {
                 //ExcelWorksheet ws = package.Workbook.Worksheets["Фильтры"];
                 ExcelWorksheet ws = package.Workbook.Worksheets[(int)enWsName.Распарсен];
-                dataGridView1.DataSource = GetDataTableFromWS(ws);
+                
 
+                //TODO Обработать ошибку задвоения колонок 
+                dt = GetDataTableFromWS(ws);
+                dataGridView1.DataSource = dt;
+
+
+
+                //dt.Columns.Cast<DataColumn>().GroupBy(v => v).Where(g => g.Count() > 1).ToList()
+
+                
+                //dt.Columns.Cast<DataColumn>().Select(x => x.ColumnName.ToUpper()).GroupBy(n=>n).Where(g=>g.Count()>1).ToList()
+                var arrName = dt.Columns.Cast<DataColumn>().Select(x => x.ColumnName).ToArray();
+
+
+
+
+                //lblInfo.Text =  $"Добавлено - {BulkСopyToDB(dt)} строки";
             }
-
-            
         }
+        //list.GroupBy(v => v).Where(g => g.Count() > 1).Select(g => g.Key)
 
         private void button1_Click(object sender, EventArgs e)
         {
@@ -597,7 +613,7 @@ namespace ParceYmlApp
             //var coll = GetCategoriesColl(root);
             //var coll = GetBrandColl(root);
             var coll = GetManufacturerColl(root);
-            label3.Text = $"Выбрано - {coll.Count()} строк";
+            lblInfo.Text = $"Выбрано - {coll.Count()} строк";
             dataGridView1.DataSource = SqlHelper.ToDataTable(coll.ToList());
         }
 
@@ -650,6 +666,10 @@ namespace ParceYmlApp
             List<object> WorksheetRowsColl = new List<object>();
             var rowCount = ws.Dimension.End.Row; //Utils.GetLastUsedRow(ws);
             var сolCount = ws.Dimension.End.Column;
+
+            // TODO Обработать ошибку задвоения колонок
+            //ws.Cells[1, 1, 1, сolCount]
+
             for (var rowNum = 1; rowNum <= rowCount; rowNum++)
             {
                 var row = ws.Cells[rowNum, 1, rowNum, сolCount];
@@ -658,14 +678,19 @@ namespace ParceYmlApp
                 WorksheetRowsColl.Add(row.Value);
             }
 
-            var i = 0;
+            //dt.Columns.Cast<DataColumn>().Select(x => x.ColumnName.ToUpper()).GroupBy(n=>n).Where(g=>g.Count()>1).ToList()
+
             var titleColName = (object[,])WorksheetRowsColl[0];
             for (int k = 0; k < titleColName.Length; k++)
             {
+              
                 if (titleColName[0, k] == null) continue;
                 dtResult.Columns.Add(titleColName[0, k].ToString(), typeof(string));
             }
 
+            dtResult.Columns.Add("row_id", typeof(int));
+
+            var i = 1;
             foreach (object[,] row in WorksheetRowsColl)
             {
                 var dr = dtResult.Rows.Add();
@@ -674,8 +699,11 @@ namespace ParceYmlApp
                     if (titleColName[0, j] == null) continue;
                     dr[(string)titleColName[0, j]] = row[0, j];
                 }
+                dr["row_id"] = i;
                 i++;
             }
+
+            
             return dtResult;
         }
 
@@ -685,18 +713,22 @@ namespace ParceYmlApp
             using (var connection = new SqlConnection(Program.connectionStr))
             {
                 connection.Open();
+                string tTable = "dbo.tmp_YML2";
+                SqlCommand commandRowCount = new SqlCommand($"select count(*) from {tTable}", connection);
 
-                SqlCommand commandRowCount = new SqlCommand("select count(*) FROM dbo.tmp_YML2",connection);
-
-                var tSQL = "drop table tmp_YML2";
+                string tSQL = $" IF EXISTS (select * from dbo.sysobjects where id = object_id('{tTable}')) " +
+                              $" drop table {tTable}";
                 var cmd = new SqlCommand(tSQL, connection);
                 cmd.CommandType = CommandType.Text;
                 cmd.Connection = connection;
                 cmd.ExecuteNonQuery();
-                
+
+
+                GreateTable(dt, connection,tTable);
+
                 using (var bulkCopy = new SqlBulkCopy(connection))
                 {
-                    bulkCopy.DestinationTableName = "tmp_YML2";
+                    bulkCopy.DestinationTableName = tTable;
                     bulkCopy.WriteToServer(dt);
                 }
                 insRowsCount = System.Convert.ToInt32(commandRowCount.ExecuteScalar());
@@ -719,6 +751,25 @@ namespace ParceYmlApp
                 new Item() {id = 12,Name = "description"},
                 new Item() {id = 13,Name = "picture"}
             };
+        }
+
+        private void GreateTable(DataTable dt, SqlConnection connection, string tTable)
+        {
+        
+                var sSQL = $"CREATE TABLE {tTable} (";
+                for (int i = 0; i < dt.Columns.Count-1; i++)
+                {
+                    sSQL += $"[{dt.Columns[i].Caption}] nvarchar(MAX) NULL,";
+                }
+                sSQL += "[row_id][int] IDENTITY(1, 1) NOT NULL";
+                sSQL +=
+                    $" CONSTRAINT [PK_{tTable}] PRIMARY KEY CLUSTERED ([row_id] ASC) " +
+                    $" WITH(PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF" +
+                    $", ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON[PRIMARY]) ON[PRIMARY] TEXTIMAGE_ON[PRIMARY]";
+
+                SqlCommand createtable = new SqlCommand(sSQL, connection);
+                createtable.ExecuteNonQuery();
+            
         }
     }
 }

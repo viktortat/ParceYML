@@ -38,7 +38,7 @@
             this.chbCopyToDB = new System.Windows.Forms.CheckBox();
             this.button3 = new System.Windows.Forms.Button();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
-            this.label3 = new System.Windows.Forms.Label();
+            this.lblInfo = new System.Windows.Forms.Label();
             this.btnParseInExcel = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
@@ -147,14 +147,14 @@
             this.dataGridView1.Size = new System.Drawing.Size(401, 298);
             this.dataGridView1.TabIndex = 22;
             // 
-            // label3
+            // lblInfo
             // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(178, 130);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(16, 13);
-            this.label3.TabIndex = 23;
-            this.label3.Text = "...";
+            this.lblInfo.AutoSize = true;
+            this.lblInfo.Location = new System.Drawing.Point(178, 130);
+            this.lblInfo.Name = "lblInfo";
+            this.lblInfo.Size = new System.Drawing.Size(16, 13);
+            this.lblInfo.TabIndex = 23;
+            this.lblInfo.Text = "...";
             // 
             // btnParseInExcel
             // 
@@ -172,7 +172,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(411, 462);
             this.Controls.Add(this.btnParseInExcel);
-            this.Controls.Add(this.label3);
+            this.Controls.Add(this.lblInfo);
             this.Controls.Add(this.dataGridView1);
             this.Controls.Add(this.button3);
             this.Controls.Add(this.chbCopyToDB);
@@ -205,7 +205,7 @@
         private System.Windows.Forms.CheckBox chbCopyToDB;
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.DataGridView dataGridView1;
-        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label lblInfo;
         private System.Windows.Forms.Button btnParseInExcel;
     }
 }

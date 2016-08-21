@@ -54,6 +54,7 @@
     <Compile Include="DTO\Brand.cs" />
     <Compile Include="DTO\Category.cs" />
     <Compile Include="DtoXML.cs" />
+    <Compile Include="Enums.cs" />
     <Compile Include="frmMain.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -78,6 +79,7 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <None Include="ClassDiagram.cd" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

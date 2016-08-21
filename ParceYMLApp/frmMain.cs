@@ -15,13 +15,12 @@ using System.Windows.Forms;
 using System.Xml;
 using System.Diagnostics;
 using OfficeOpenXml.Style;
+using ParceYmlApp.Enums;
 
 namespace ParceYmlApp
 {
     public partial class frmMain : Form
     {
-
-
         public frmMain()
         {
             InitializeComponent();
@@ -34,6 +33,27 @@ namespace ParceYmlApp
             Program.PathExcelFileImport = AppDomain.CurrentDomain.BaseDirectory + @"testXml\soap.xml";
             Program.PathFolderBase = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"testXml");
             txbPathSelector.Text = Program.PathExcelFileImport;
+        }
+
+        private void btnParseInExcel_Click(object sender, EventArgs e)
+        {
+            //Program.PathFolderBase
+            var fName = "TestOut.xlsx";
+
+            var FileNameOut = Path.GetFullPath(AppDomain.CurrentDomain.BaseDirectory + @"..\\..\\..\\" + fName);
+            //var FileNameIn = Path.GetFileNameWithoutExtension(Program.PathExcelFileImport) + ".xlsx";
+            var FileNameIn = @"c:\333\ParceYML\soap.xlsx";
+
+            FileInfo existingFile = new FileInfo(FileNameIn);
+            using (ExcelPackage package = new ExcelPackage(existingFile))
+            {
+                //ExcelWorksheet ws = package.Workbook.Worksheets["Фильтры"];
+                ExcelWorksheet ws = package.Workbook.Worksheets[(int)enWsName.Распарсен];
+                dataGridView1.DataSource = GetDataTableFromWS(ws);
+
+            }
+
+            
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -212,12 +232,6 @@ namespace ParceYmlApp
             {
                 Program.PathExcelFileImport = openFileDialog1.FileName;
                 txbPathSelector.Text = Path.GetFullPath(Program.PathExcelFileImport);
-
-                //lblTopFileName.Text = Path.GetFileName(Program.PathExcelFileImport);
-                //ExcelFolderName = Path.GetDirectoryName(Program.PathExcelFileImport);
-                //PathExcelFile = txbPathSelector.Text;
-
-                //ReloadPackage();
             }
         }
 
@@ -313,7 +327,7 @@ namespace ParceYmlApp
             var ManufactureArr = GetManufacturerColl(root);
             var CategoriesColl = GetCategoriesColl(root);
 
-            if (chbCopyToDB.Checked) BulkСopyToDB(root);
+            //if (chbCopyToDB.Checked) BulkСopyToDB(root);
 
             string fileName = Path.GetFileNameWithoutExtension(FileName) + ".xlsx";
             string outputDir = Path.GetDirectoryName(FileName);
@@ -324,10 +338,10 @@ namespace ParceYmlApp
             using (ExcelPackage package = new ExcelPackage())
             {
                 ExcelWorksheet ws = package.Workbook.Worksheets.Add("Распарсен");
-                ExcelWorksheet wsCatigoty = package.Workbook.Worksheets.Add("Категории");
-                ExcelWorksheet wsParam = package.Workbook.Worksheets.Add("Фильтры");
-                ExcelWorksheet wsManuf = package.Workbook.Worksheets.Add("Производители");
-                ExcelWorksheet wsBrand = package.Workbook.Worksheets.Add("Бренды");
+                ExcelWorksheet wsCatigoty = package.Workbook.Worksheets.Add(enWsName.Категории.ToString());
+                ExcelWorksheet wsParam = package.Workbook.Worksheets.Add(enWsName.Фильтры.ToString());
+                ExcelWorksheet wsManuf = package.Workbook.Worksheets.Add(enWsName.Производители.ToString());
+                ExcelWorksheet wsBrand = package.Workbook.Worksheets.Add(enWsName.Бренды.ToString());
 
                 int cRow = 3;
                 int cRowAtr = 3;
@@ -572,61 +586,6 @@ namespace ParceYmlApp
                 .OrderBy(r => r["name"].InnerText);
         }
 
-        private void BulkСopyToDB(XmlElement root)
-        {
-
-
-            var nodeList = GetOffer(root);
-
-            var brandArr = GetBrandColl(root);
-
-            var factoryArr = GetManufacturerColl(root);
-
-            var CategoriesColl = GetCategoriesColl(root);
-
-            var DT = new DataTable();
-
-
-            return;//Пока не понятно что и как...
-
-            List<Item> MainTableColl = new List<Item>
-            {
-                new Item() {id = 1,Name = "available"},
-                new Item() {id = 2,Name = "id"},
-                new Item() {id = 3,Name = "name"},
-                new Item() {id = 4,Name = "url"},
-                new Item() {id = 5,Name = "price"},
-                new Item() {id = 6,Name = "currencyId"},
-                new Item() {id = 7,Name = "categoryId"},
-                new Item() {id = 8,Name = "categoryName"},
-                new Item() {id = 9,Name = "delivery"},
-                new Item() {id = 10,Name = "vendorCode"},
-                new Item() {id = 11,Name = "vendor"},
-                new Item() {id = 12,Name = "description"},
-                new Item() {id = 13,Name = "picture"}
-            };
-
-            //CategoriesColl.Where(x => x.id == isbn["categoryId"].InnerText).Select(x => x.Name).FirstOrDefault();
-
-
-            using (var connection = new SqlConnection(Program.connectionStr))
-            {
-                connection.Open();
-                /*
-                var tSQL = "truncate table tmp_YML2";
-                var cmd = new SqlCommand(tSQL, connection);
-                cmd.CommandType = CommandType.Text;
-                cmd.Connection = connection;
-                cmd.ExecuteNonQuery();
-                */
-                using (var bulkCopy = new SqlBulkCopy(connection))
-                {
-                    //TODO Доделать заливку
-                }
-            }
-        }
-
-
 
         private void button3_Click(object sender, EventArgs e)
         {
@@ -681,29 +640,85 @@ namespace ParceYmlApp
             return ret1;
 
         }
-
-        private void button4_Click(object sender, EventArgs e)
+        
+        /// <summary>
+        /// Поля возвращаемой таблицы соответствуют названиям колонок первой строки из листа Excel
+        /// </summary>
+        private static DataTable GetDataTableFromWS(ExcelWorksheet ws)
         {
-            //Program.PathFolderBase
-            FileInfo existingFile = new FileInfo(AppDomain.CurrentDomain.BaseDirectory);
-            using (ExcelPackage package = new ExcelPackage(existingFile))
+            DataTable dtResult = new DataTable();
+            List<object> WorksheetRowsColl = new List<object>();
+            var rowCount = ws.Dimension.End.Row; //Utils.GetLastUsedRow(ws);
+            var сolCount = ws.Dimension.End.Column;
+            for (var rowNum = 1; rowNum <= rowCount; rowNum++)
             {
-                // get the first worksheet in the workbook
-                ExcelWorksheet worksheet = package.Workbook.Worksheets[1];
-                int col = 2; //The item description
-                             // output the data in column 2
-                for (int row = 2; row < 5; row++)
-                    Console.WriteLine("\tCell({0},{1}).Value={2}", row, col, worksheet.Cells[row, col].Value);
+                var row = ws.Cells[rowNum, 1, rowNum, сolCount];
+                bool allEmpty = row.All(c => string.IsNullOrWhiteSpace(c.Text));
+                if (allEmpty) continue;
+                WorksheetRowsColl.Add(row.Value);
+            }
 
-                // output the formula in row 5
-                Console.WriteLine("\tCell({0},{1}).Formula={2}", 3, 5, worksheet.Cells[3, 5].Formula);
-                Console.WriteLine("\tCell({0},{1}).FormulaR1C1={2}", 3, 5, worksheet.Cells[3, 5].FormulaR1C1);
+            var i = 0;
+            var titleColName = (object[,])WorksheetRowsColl[0];
+            for (int k = 0; k < titleColName.Length; k++)
+            {
+                if (titleColName[0, k] == null) continue;
+                dtResult.Columns.Add(titleColName[0, k].ToString(), typeof(string));
+            }
 
-                // output the formula in row 5
-                Console.WriteLine("\tCell({0},{1}).Formula={2}", 5, 3, worksheet.Cells[5, 3].Formula);
-                Console.WriteLine("\tCell({0},{1}).FormulaR1C1={2}", 5, 3, worksheet.Cells[5, 3].FormulaR1C1);
+            foreach (object[,] row in WorksheetRowsColl)
+            {
+                var dr = dtResult.Rows.Add();
+                for (int j = 0; j < row.Length; j++)
+                {
+                    if (titleColName[0, j] == null) continue;
+                    dr[(string)titleColName[0, j]] = row[0, j];
+                }
+                i++;
+            }
+            return dtResult;
+        }
 
-            } // the using statement automatical
+        private long BulkСopyToDB(DataTable dt)
+        {
+            var insRowsCount = 0;
+            using (var connection = new SqlConnection(Program.connectionStr))
+            {
+                connection.Open();
+
+                SqlCommand commandRowCount = new SqlCommand("select count(*) FROM dbo.tmp_YML2",connection);
+
+                var tSQL = "drop table tmp_YML2";
+                var cmd = new SqlCommand(tSQL, connection);
+                cmd.CommandType = CommandType.Text;
+                cmd.Connection = connection;
+                cmd.ExecuteNonQuery();
+                
+                using (var bulkCopy = new SqlBulkCopy(connection))
+                {
+                    bulkCopy.DestinationTableName = "tmp_YML2";
+                    bulkCopy.WriteToServer(dt);
+                }
+                insRowsCount = System.Convert.ToInt32(commandRowCount.ExecuteScalar());
+            }
+            return insRowsCount;
+
+            List<Item> MainTableColl = new List<Item>
+            {
+                new Item() {id = 1,Name = "available"},
+                new Item() {id = 2,Name = "id"},
+                new Item() {id = 3,Name = "name"},
+                new Item() {id = 4,Name = "url"},
+                new Item() {id = 5,Name = "price"},
+                new Item() {id = 6,Name = "currencyId"},
+                new Item() {id = 7,Name = "categoryId"},
+                new Item() {id = 8,Name = "categoryName"},
+                new Item() {id = 9,Name = "delivery"},
+                new Item() {id = 10,Name = "vendorCode"},
+                new Item() {id = 11,Name = "vendor"},
+                new Item() {id = 12,Name = "description"},
+                new Item() {id = 13,Name = "picture"}
+            };
         }
     }
 }

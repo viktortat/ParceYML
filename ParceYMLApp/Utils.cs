@@ -44,7 +44,7 @@ namespace ParceYmlApp
             return DT;
         }
 
-        static int GetLastUsedRow(ExcelWorksheet sheet)
+        public static int GetLastUsedRow(ExcelWorksheet sheet)
         {
             var row = sheet.Dimension.End.Row;
             var col = sheet.Dimension.End.Column;

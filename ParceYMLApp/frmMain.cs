@@ -639,6 +639,7 @@ namespace ParceYmlApp
             dataGridView1.DataSource = SqlHelper.ToDataTable(coll.ToList());
         }
 
+
         private static IEnumerable<Brand> GetBrandColl(XmlElement root)
         {
             var random = new Random((int)DateTime.Now.Ticks);

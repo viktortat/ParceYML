@@ -15,13 +15,12 @@ using System.Windows.Forms;
 using System.Xml;
 using System.Diagnostics;
 using OfficeOpenXml.Style;
+using ParceYmlApp.Enums;
 
 namespace ParceYmlApp
 {
     public partial class frmMain : Form
     {
-
-
         public frmMain()
         {
             InitializeComponent();
@@ -32,8 +31,46 @@ namespace ParceYmlApp
             Program.connectionStr =
                 Program.connectionStr = ConfigurationManager.ConnectionStrings["TbnProd.Local"].ConnectionString;
             Program.PathExcelFileImport = AppDomain.CurrentDomain.BaseDirectory + @"testXml\soap.xml";
+            Program.PathFolderBase = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"testXml");
             txbPathSelector.Text = Program.PathExcelFileImport;
         }
+
+        private void btnParseInExcel_Click(object sender, EventArgs e)
+        {
+            //Program.PathFolderBase
+            var fName = "TestOut.xlsx";
+
+            var FileNameOut = Path.GetFullPath(AppDomain.CurrentDomain.BaseDirectory + @"..\\..\\..\\" + fName);
+            //var FileNameIn = Path.GetFileNameWithoutExtension(Program.PathExcelFileImport) + ".xlsx";
+            var FileNameIn = @"c:\333\ParceYML\soap.xlsx";
+            DataTable dt = new DataTable();
+
+            FileInfo existingFile = new FileInfo(FileNameIn);
+            using (ExcelPackage package = new ExcelPackage(existingFile))
+            {
+                //ExcelWorksheet ws = package.Workbook.Worksheets["Фильтры"];
+                ExcelWorksheet ws = package.Workbook.Worksheets[(int)enWsName.Распарсен];
+                
+
+                //TODO Обработать ошибку задвоения колонок 
+                dt = GetDataTableFromWS(ws);
+                dataGridView1.DataSource = dt;
+
+
+
+                //dt.Columns.Cast<DataColumn>().GroupBy(v => v).Where(g => g.Count() > 1).ToList()
+
+                
+                //dt.Columns.Cast<DataColumn>().Select(x => x.ColumnName.ToUpper()).GroupBy(n=>n).Where(g=>g.Count()>1).ToList()
+                var arrName = dt.Columns.Cast<DataColumn>().Select(x => x.ColumnName).ToArray();
+
+
+
+
+                //lblInfo.Text =  $"Добавлено - {BulkСopyToDB(dt)} строки";
+            }
+        }
+        //list.GroupBy(v => v).Where(g => g.Count() > 1).Select(g => g.Key)
 
         private void button1_Click(object sender, EventArgs e)
         {
@@ -211,12 +248,6 @@ namespace ParceYmlApp
             {
                 Program.PathExcelFileImport = openFileDialog1.FileName;
                 txbPathSelector.Text = Path.GetFullPath(Program.PathExcelFileImport);
-
-                //lblTopFileName.Text = Path.GetFileName(Program.PathExcelFileImport);
-                //ExcelFolderName = Path.GetDirectoryName(Program.PathExcelFileImport);
-                //PathExcelFile = txbPathSelector.Text;
-
-                //ReloadPackage();
             }
         }
 
@@ -312,7 +343,7 @@ namespace ParceYmlApp
             var ManufactureArr = GetManufacturerColl(root);
             var CategoriesColl = GetCategoriesColl(root);
 
-            if (chbCopyToDB.Checked) BulkСopyToDB(root);
+            //if (chbCopyToDB.Checked) BulkСopyToDB(root);
 
             string fileName = Path.GetFileNameWithoutExtension(FileName) + ".xlsx";
             string outputDir = Path.GetDirectoryName(FileName);
@@ -323,55 +354,55 @@ namespace ParceYmlApp
             using (ExcelPackage package = new ExcelPackage())
             {
                 ExcelWorksheet ws = package.Workbook.Worksheets.Add("Распарсен");
-                ExcelWorksheet wsCatigoty = package.Workbook.Worksheets.Add("Категории");
-                ExcelWorksheet wsParam = package.Workbook.Worksheets.Add("Фильтры");
-                ExcelWorksheet wsManuf = package.Workbook.Worksheets.Add("Производители");
-                ExcelWorksheet wsBrand = package.Workbook.Worksheets.Add("Бренды");
+                ExcelWorksheet wsCatigoty = package.Workbook.Worksheets.Add(enWsName.Категории.ToString());
+                ExcelWorksheet wsParam = package.Workbook.Worksheets.Add(enWsName.Фильтры.ToString());
+                ExcelWorksheet wsManuf = package.Workbook.Worksheets.Add(enWsName.Производители.ToString());
+                ExcelWorksheet wsBrand = package.Workbook.Worksheets.Add(enWsName.Бренды.ToString());
 
-                int cRow = 2;
-                int cRowAtr = 2;
-                int cRowCat = 2;
-                int cRowManuf = 2;
-                int cRowBrand = 2;
+                int cRow = 3;
+                int cRowAtr = 3;
+                int cRowCat = 3;
+                int cRowManuf = 3;
+                int cRowBrand = 3;
 
                 Color clrHead = Color.LightSkyBlue;
 
-                SetCellHeader(wsManuf.Cells[1, 1], clrHead, "№");
-                SetCellHeader(wsManuf.Cells[1, 2], clrHead, "Название");
-                SetCellHeader(wsManuf.Cells[1, 3], clrHead, "НазваниеTBN");
-                SetCellHeader(wsManuf.Cells[1, 4], clrHead, "Страна");
+                SetCellHeader(wsManuf.Cells[2, 1], clrHead, "№");
+                SetCellHeader(wsManuf.Cells[2, 2], clrHead, "Название");
+                SetCellHeader(wsManuf.Cells[2, 3], clrHead, "НазваниеTBN");
+                SetCellHeader(wsManuf.Cells[2, 4], clrHead, "Страна");
 
-                SetCellHeader(wsBrand.Cells[1, 1], clrHead, "№");
-                //SetCellHeader(wsBrand.Cells[1, 2], clrHead, "КодБренда");
-                SetCellHeader(wsBrand.Cells[1, 2], clrHead, "Название");
-                SetCellHeader(wsBrand.Cells[1, 3], clrHead, "НазваниеTBN");
-                SetCellHeader(wsBrand.Cells[1, 4], clrHead, "Страна");
+                SetCellHeader(wsBrand.Cells[2, 1], clrHead, "№");
+                //SetCellHeader(wsBrand.Cells[2, 2], clrHead, "КодБренда");
+                SetCellHeader(wsBrand.Cells[2, 2], clrHead, "Название");
+                SetCellHeader(wsBrand.Cells[2, 3], clrHead, "НазваниеTBN");
+                SetCellHeader(wsBrand.Cells[2, 4], clrHead, "Страна");
 
-                SetCellHeader(wsParam.Cells[1, 1], clrHead, "id");
-                SetCellHeader(wsParam.Cells[1, 2], clrHead, "Название");
-                SetCellHeader(wsParam.Cells[1, 3], clrHead, "НазваниеTBN");
-                SetCellHeader(wsParam.Cells[1, 4], clrHead, "Type");
+                SetCellHeader(wsParam.Cells[2, 1], clrHead, "id");
+                SetCellHeader(wsParam.Cells[2, 2], clrHead, "Название");
+                SetCellHeader(wsParam.Cells[2, 3], clrHead, "НазваниеTBN");
+                SetCellHeader(wsParam.Cells[2, 4], clrHead, "Type");
 
-                SetCellHeader(wsCatigoty.Cells[1, 1], clrHead, "id");
-                SetCellHeader(wsCatigoty.Cells[1, 2], clrHead, "parentId");
-                SetCellHeader(wsCatigoty.Cells[1, 3], clrHead, "parentName");
-                SetCellHeader(wsCatigoty.Cells[1, 4], clrHead, "Name");
-                SetCellHeader(wsCatigoty.Cells[1, 5], clrHead, "НашId");
-                SetCellHeader(wsCatigoty.Cells[1, 6], clrHead, "НашаКатегория");
+                SetCellHeader(wsCatigoty.Cells[2, 1], clrHead, "id");
+                SetCellHeader(wsCatigoty.Cells[2, 2], clrHead, "parentId");
+                SetCellHeader(wsCatigoty.Cells[2, 3], clrHead, "parentName");
+                SetCellHeader(wsCatigoty.Cells[2, 4], clrHead, "Name");
+                SetCellHeader(wsCatigoty.Cells[2, 5], clrHead, "НашId");
+                SetCellHeader(wsCatigoty.Cells[2, 6], clrHead, "НашаКатегория");
 
-                SetCellHeader(ws.Cells[1, 1], clrHead, "available");
-                SetCellHeader(ws.Cells[1, 2], clrHead, "id");
-                SetCellHeader(ws.Cells[1, 3], clrHead, "name");
-                SetCellHeader(ws.Cells[1, 4], clrHead, "url");
-                SetCellHeader(ws.Cells[1, 5], clrHead, "price");
-                SetCellHeader(ws.Cells[1, 6], clrHead, "currencyId");
-                SetCellHeader(ws.Cells[1, 7], clrHead, "categoryId");
-                SetCellHeader(ws.Cells[1, 8], clrHead, "categoryName");
-                SetCellHeader(ws.Cells[1, 9], clrHead, "delivery");
-                SetCellHeader(ws.Cells[1, 10], clrHead, "vendorCode");
-                SetCellHeader(ws.Cells[1, 11], clrHead, "vendor");
-                SetCellHeader(ws.Cells[1, 12], clrHead, "description");
-                SetCellHeader(ws.Cells[1, 13], clrHead, "picture");
+                SetCellHeader(ws.Cells[2, 1], clrHead, "available");
+                SetCellHeader(ws.Cells[2, 2], clrHead, "id");
+                SetCellHeader(ws.Cells[2, 3], clrHead, "name");
+                SetCellHeader(ws.Cells[2, 4], clrHead, "url");
+                SetCellHeader(ws.Cells[2, 5], clrHead, "price");
+                SetCellHeader(ws.Cells[2, 6], clrHead, "currencyId");
+                SetCellHeader(ws.Cells[2, 7], clrHead, "categoryId");
+                SetCellHeader(ws.Cells[2, 8], clrHead, "categoryName");
+                SetCellHeader(ws.Cells[2, 9], clrHead, "delivery");
+                SetCellHeader(ws.Cells[2, 10], clrHead, "vendorCode");
+                SetCellHeader(ws.Cells[2, 11], clrHead, "vendor");
+                SetCellHeader(ws.Cells[2, 12], clrHead, "description");
+                SetCellHeader(ws.Cells[2, 13], clrHead, "picture");
 
                 var cRowNom = 1;
                 foreach (var item in ManufactureArr)
@@ -414,6 +445,7 @@ namespace ParceYmlApp
                 //ws.Cells[1, 10].Value = "country_of_origin";
                 //ws.Cells[1, 11].Value = "barcode";
 
+
                 var startCol = 14;
 
                 foreach (XmlNode isbn in nodeList)
@@ -439,7 +471,8 @@ namespace ParceYmlApp
 
                 foreach (var item in d)
                 {
-                    SetCellHeader(ws.Cells[1, item.Val], Color.LightBlue, item.Name);
+                    SetCellHeader(ws.Cells[2, item.Val], Color.LightBlue, item.Name);
+
                     wsParam.Cells[cRowAtr, 1].Value = item.Val;
                     //wsParam.Cells[cRowAtr, 2].Value = item.Name;
                     SetCellHeader(wsParam.Cells[cRowAtr, 2], Color.LightGray, item.Name);
@@ -569,61 +602,6 @@ namespace ParceYmlApp
                 .OrderBy(r => r["name"].InnerText);
         }
 
-        private void BulkСopyToDB(XmlElement root)
-        {
-
-
-            var nodeList = GetOffer(root);
-
-            var brandArr = GetBrandColl(root);
-
-            var factoryArr = GetManufacturerColl(root);
-
-            var CategoriesColl = GetCategoriesColl(root);
-
-            var DT = new DataTable();
-
-
-            return;//Пока не понятно что и как...
-
-            List<Item> MainTableColl = new List<Item>
-            {
-                new Item() {id = 1,Name = "available"},
-                new Item() {id = 2,Name = "id"},
-                new Item() {id = 3,Name = "name"},
-                new Item() {id = 4,Name = "url"},
-                new Item() {id = 5,Name = "price"},
-                new Item() {id = 6,Name = "currencyId"},
-                new Item() {id = 7,Name = "categoryId"},
-                new Item() {id = 8,Name = "categoryName"},
-                new Item() {id = 9,Name = "delivery"},
-                new Item() {id = 10,Name = "vendorCode"},
-                new Item() {id = 11,Name = "vendor"},
-                new Item() {id = 12,Name = "description"},
-                new Item() {id = 13,Name = "picture"}
-            };
-
-            //CategoriesColl.Where(x => x.id == isbn["categoryId"].InnerText).Select(x => x.Name).FirstOrDefault();
-
-
-            using (var connection = new SqlConnection(Program.connectionStr))
-            {
-                connection.Open();
-                /*
-                var tSQL = "truncate table tmp_YML2";
-                var cmd = new SqlCommand(tSQL, connection);
-                cmd.CommandType = CommandType.Text;
-                cmd.Connection = connection;
-                cmd.ExecuteNonQuery();
-                */
-                using (var bulkCopy = new SqlBulkCopy(connection))
-                {
-                    //TODO Доделать заливку
-                }
-            }
-        }
-
-
 
         private void button3_Click(object sender, EventArgs e)
         {
@@ -635,7 +613,7 @@ namespace ParceYmlApp
             //var coll = GetCategoriesColl(root);
             //var coll = GetBrandColl(root);
             var coll = GetManufacturerColl(root);
-            label3.Text = $"Выбрано - {coll.Count()} строк";
+            lblInfo.Text = $"Выбрано - {coll.Count()} строк";
             dataGridView1.DataSource = SqlHelper.ToDataTable(coll.ToList());
         }
 
@@ -678,6 +656,121 @@ namespace ParceYmlApp
             }).OrderBy(f => f.Name);
             return ret1;
 
+        }
+        
+        /// <summary>
+        /// Поля возвращаемой таблицы соответствуют названиям колонок первой строки из листа Excel
+        /// </summary>
+        private static DataTable GetDataTableFromWS(ExcelWorksheet ws)
+        {
+            DataTable dtResult = new DataTable();
+            List<object> WorksheetRowsColl = new List<object>();
+            var rowCount = ws.Dimension.End.Row; //Utils.GetLastUsedRow(ws);
+            var сolCount = ws.Dimension.End.Column;
+
+            // TODO Обработать ошибку задвоения колонок
+            //ws.Cells[1, 1, 1, сolCount]
+
+            for (var rowNum = 1; rowNum <= rowCount; rowNum++)
+            {
+                var row = ws.Cells[rowNum, 1, rowNum, сolCount];
+                bool allEmpty = row.All(c => string.IsNullOrWhiteSpace(c.Text));
+                if (allEmpty) continue;
+                WorksheetRowsColl.Add(row.Value);
+            }
+
+            //dt.Columns.Cast<DataColumn>().Select(x => x.ColumnName.ToUpper()).GroupBy(n=>n).Where(g=>g.Count()>1).ToList()
+
+            var titleColName = (object[,])WorksheetRowsColl[0];
+            for (int k = 0; k < titleColName.Length; k++)
+            {
+              
+                if (titleColName[0, k] == null) continue;
+                dtResult.Columns.Add(titleColName[0, k].ToString(), typeof(string));
+            }
+
+            dtResult.Columns.Add("row_id", typeof(int));
+
+            var i = 1;
+            foreach (object[,] row in WorksheetRowsColl)
+            {
+                var dr = dtResult.Rows.Add();
+                for (int j = 0; j < row.Length; j++)
+                {
+                    if (titleColName[0, j] == null) continue;
+                    dr[(string)titleColName[0, j]] = row[0, j];
+                }
+                dr["row_id"] = i;
+                i++;
+            }
+
+            
+            return dtResult;
+        }
+
+        private long BulkСopyToDB(DataTable dt)
+        {
+            var insRowsCount = 0;
+            using (var connection = new SqlConnection(Program.connectionStr))
+            {
+                connection.Open();
+                string tTable = "dbo.tmp_YML2";
+                SqlCommand commandRowCount = new SqlCommand($"select count(*) from {tTable}", connection);
+
+                string tSQL = $" IF EXISTS (select * from dbo.sysobjects where id = object_id('{tTable}')) " +
+                              $" drop table {tTable}";
+                var cmd = new SqlCommand(tSQL, connection);
+                cmd.CommandType = CommandType.Text;
+                cmd.Connection = connection;
+                cmd.ExecuteNonQuery();
+
+
+                GreateTable(dt, connection,tTable);
+
+                using (var bulkCopy = new SqlBulkCopy(connection))
+                {
+                    bulkCopy.DestinationTableName = tTable;
+                    bulkCopy.WriteToServer(dt);
+                }
+                insRowsCount = System.Convert.ToInt32(commandRowCount.ExecuteScalar());
+            }
+            return insRowsCount;
+
+            List<Item> MainTableColl = new List<Item>
+            {
+                new Item() {id = 1,Name = "available"},
+                new Item() {id = 2,Name = "id"},
+                new Item() {id = 3,Name = "name"},
+                new Item() {id = 4,Name = "url"},
+                new Item() {id = 5,Name = "price"},
+                new Item() {id = 6,Name = "currencyId"},
+                new Item() {id = 7,Name = "categoryId"},
+                new Item() {id = 8,Name = "categoryName"},
+                new Item() {id = 9,Name = "delivery"},
+                new Item() {id = 10,Name = "vendorCode"},
+                new Item() {id = 11,Name = "vendor"},
+                new Item() {id = 12,Name = "description"},
+                new Item() {id = 13,Name = "picture"}
+            };
+        }
+
+        private void GreateTable(DataTable dt, SqlConnection connection, string tTable)
+        {
+        
+                var sSQL = $"CREATE TABLE {tTable} (";
+                for (int i = 0; i < dt.Columns.Count-1; i++)
+                {
+                    sSQL += $"[{dt.Columns[i].Caption}] nvarchar(MAX) NULL,";
+                }
+                sSQL += "[row_id][int] IDENTITY(1, 1) NOT NULL";
+                sSQL +=
+                    $" CONSTRAINT [PK_{tTable}] PRIMARY KEY CLUSTERED ([row_id] ASC) " +
+                    $" WITH(PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF" +
+                    $", ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON[PRIMARY]) ON[PRIMARY] TEXTIMAGE_ON[PRIMARY]";
+
+                SqlCommand createtable = new SqlCommand(sSQL, connection);
+                createtable.ExecuteNonQuery();
+            
         }
     }
 }

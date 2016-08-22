@@ -1,12 +1,76 @@
-﻿using System.Data;
+﻿using System;
+using System.Data;
+using System.IO;
 using System.Text.RegularExpressions;
 using OfficeOpenXml;
 
-namespace ParceYmlApp
+namespace UtilsTbn
 {
     public static class Utils
     {
-        public static DataTable GetDTNew(ExcelWorksheet ws)
+
+            /*
+             public static DataTable GetDTNew(String pathExcelFile, int StartRow, string SheetName)
+            {
+                if (!File.Exists(pathExcelFile))
+                {
+                    return null;
+                }
+
+                var DT = new DataTable();
+
+                var notOpenFile = true;
+                do
+                {
+                    try
+                    {
+                        using (var p = new ExcelPackage(new FileInfo(pathExcelFile)))
+                        {
+                            if (p.Workbook != null)
+                            {
+                                var ws = p.Workbook.Worksheets[SheetName]; //First();
+
+                                var rowCount = GetLastUsedRow(ws);
+                                var сolCount = ws.Dimension.End.Column;
+
+                                DT.Columns.Add("cid", typeof(int));
+                                for (var col = 1; col < сolCount + 1; col++)
+                                {
+                                    var Column = new DataColumn();
+                                    Column.DataType = typeof(string);
+                                    Column.ColumnName = (string)ws.Cells[1, col].Value ?? (string)ws.Cells[2, col].Value;
+                                    DT.Columns.Add(Column);
+                                }
+
+                                for (var i = StartRow; i <= rowCount; i++)
+                                {
+                                    var dr = DT.Rows.Add();
+                                    dr["cid"] = i;
+                                    for (var k = 1; k < сolCount + 1; k++)
+                                    {
+                                        string error = null;
+                                        var cellVal = ws.Cells[i, k].Value;
+                                        if (cellVal != null)
+                                        {
+                                            //&& string.IsNullOrWhiteSpace(cellVal)
+                                            //dr[k] = cellVal.ToString().Replace(Environment.NewLine, " ").Trim();
+                                            dr[k] = UtilsTbn.ReplSpaces(cellVal.ToString().Trim());
+                                        }
+                                    }
+                                }
+                                notOpenFile = false;
+                            }
+                        }
+                    }
+                    catch (IOException exception)
+                    {
+                        MessageBox.Show($"закройте документ {pathExcelFile} и нажмите OK");
+                    }
+                } while (notOpenFile);
+                return DT;
+            }
+            */
+        public static DataTable GetDTNew2(ExcelWorksheet ws)
         {
             var StartRow = 3;
             var DT = new DataTable();
@@ -72,6 +136,8 @@ namespace ParceYmlApp
         {
             text = Regex.Replace(text, @"\s+", " ");
             return text.Trim();
+
+            #region "По старорому"
             /*
             string s = "";
             string[] whitespaceChars = new string[] {
@@ -109,6 +175,7 @@ namespace ParceYmlApp
             return s;
             //return text.Replace(char.ConvertFromUtf32(160), "");
             */
+            #endregion
         }
     }
 }

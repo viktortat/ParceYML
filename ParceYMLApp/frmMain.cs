@@ -20,6 +20,19 @@ using ParceYmlApp.Enums;
 
 namespace ParceYmlApp
 {
+    /*
+    public static class ExcelWorksheetExtension
+    {
+        public static string[] GetHeaderColumns(this ExcelWorksheet sheet)
+        {
+            List<string> columnNames = new List<string>();
+            //foreach (var firstRowCell in sheet.Cells[sheet.Dimension.Start.Row, sheet.Dimension.Start.Column, 1, sheet.Dimension.End.Column])
+            foreach (var firstRowCell in sheet.Cells[1, sheet.Dimension.Start.Column, 1, sheet.Dimension.End.Column])
+                columnNames.Add(firstRowCell.Text);
+            return columnNames.ToArray();
+        }
+    }
+    */
     public partial class frmMain : Form
     {
         public frmMain()
@@ -43,12 +56,20 @@ namespace ParceYmlApp
 
         private void btnParseFromExcel_Click(object sender, EventArgs e)
         {
+            //select * from tmp_YML2
             //Program.PathFolderBase
             var fName = "TestOut.xlsx";
 
             var FileNameOut = Path.GetFullPath(AppDomain.CurrentDomain.BaseDirectory + @"..\\..\\..\\" + fName);
             //var FileNameIn = Path.GetFileNameWithoutExtension(Program.PathExcelFileImport) + ".xlsx";
-            var FileNameIn = @"c:\333\ParceYML\soap.xlsx";
+            //var FileNameIn = @"c:\333\ParceYML\soap.xlsx";
+
+
+            var FileNameIn = Path.GetFullPath(AppDomain.CurrentDomain.BaseDirectory+ @"testXml\soapIdeal.xlsx");
+            //var FileNameIn = Path.GetFullPath(AppDomain.CurrentDomain.BaseDirectory+ @"testXml\soap.xlsx");
+            txbPathSelector.Text = FileNameIn;
+
+
             DataTable dt = new DataTable();
 
             FileInfo existingFile = new FileInfo(FileNameIn);
@@ -57,14 +78,33 @@ namespace ParceYmlApp
                 //ExcelWorksheet ws = package.Workbook.Worksheets["Фильтры"];
                 ExcelWorksheet ws = package.Workbook.Worksheets[(int)enWsName.Распарсен];
 
-                //TODO Обработать ошибку задвоения колонок 
+                
+                List<string> columnNames = new List<string>();
+                foreach (var firstRowCell in ws.Cells[ws.Dimension.Start.Row, ws.Dimension.Start.Column, 1, ws.Dimension.End.Column])
+                    columnNames.Add(firstRowCell.Text);
+
+                var duplicates = columnNames.Select(x => x.ToUpper()).GroupBy(v => v).Where(g => g.Count() > 1).ToList();
+                if (duplicates.Count > 0)
+                {
+                    var sErr = "Найдены дубликаты названий колонок! \n" +
+                               "Исправьте исходный файл и повторите затяжку\n";
+                    foreach (var r in duplicates)
+                    {
+                        sErr += $"\t'{r.Key}'\n";
+                    }
+                    lblInfo.Text = sErr;
+                    DialogResult dialogResult = MessageBox.Show(sErr, "Ошибка!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    Console.WriteLine(sErr);
+                    if (dialogResult == DialogResult.OK)
+                    {
+                        Application.Exit();
+                        return;
+                    }
+                }
+
                 dt = GetDataTableFromWS(ws);
                 dataGridView1.DataSource = dt;
-
-                //dt.Columns.Cast<DataColumn>().GroupBy(v => v).Where(g => g.Count() > 1).ToList()
-                //dt.Columns.Cast<DataColumn>().Select(x => x.ColumnName.ToUpper()).GroupBy(n=>n).Where(g=>g.Count()>1).ToList()
-                var arrName = dt.Columns.Cast<DataColumn>().Select(x => x.ColumnName).ToArray();
-                //lblInfo.Text =  $"Добавлено - {BulkСopyToDB(dt)} строки";
+                lblInfo.Text = $"Добавлено - {BulkСopyToDB(dt)} строки";
             }
         }
         //list.GroupBy(v => v).Where(g => g.Count() > 1).Select(g => g.Key)
@@ -345,9 +385,7 @@ namespace ParceYmlApp
 
             string fileName = Path.GetFileNameWithoutExtension(FileName) + ".xlsx";
             string outputDir = Path.GetDirectoryName(FileName);
-
             
-
             var file = new FileInfo(outputDir + '\\' + fileName);
             using (ExcelPackage package = new ExcelPackage())
             {
@@ -745,10 +783,8 @@ namespace ParceYmlApp
             List<object> WorksheetRowsColl = new List<object>();
             var rowCount = ws.Dimension.End.Row; //Utils.GetLastUsedRow(ws);
             var сolCount = ws.Dimension.End.Column;
-
-            // TODO Обработать ошибку задвоения колонок
-            //ws.Cells[1, 1, 1, сolCount]
-
+            
+   
             for (var rowNum = 1; rowNum <= rowCount; rowNum++)
             {
                 var row = ws.Cells[rowNum, 1, rowNum, сolCount];
@@ -767,9 +803,26 @@ namespace ParceYmlApp
                 dtResult.Columns.Add(titleColName[0, k].ToString(), typeof(string));
             }
 
-            dtResult.Columns.Add("row_id", typeof(int));
+            dtResult.Columns.Add("rowNom", typeof(int));
 
             var i = 1;
+
+            //TODO - как по свободе переделать этот костыль! Не нравится!!!
+            var startRow = 2;
+            for (int k = startRow; k < WorksheetRowsColl.Count; k++)
+            {
+                var dr = dtResult.Rows.Add();
+                var row = WorksheetRowsColl[k];
+                for (int j = 0; j < ((object[,])row).Length; j++)
+                {
+                    if (titleColName[0, j] == null) continue;
+                    dr[(string)titleColName[0, j]] = ((object[,])row)[0, j];
+                }
+                dr["rowNom"] = i;
+                i++;
+            }
+
+            /*
             foreach (object[,] row in WorksheetRowsColl)
             {
                 var dr = dtResult.Rows.Add();
@@ -778,10 +831,10 @@ namespace ParceYmlApp
                     if (titleColName[0, j] == null) continue;
                     dr[(string)titleColName[0, j]] = row[0, j];
                 }
-                dr["row_id"] = i;
+                dr["rowNom"] = i;
                 i++;
             }
-
+            */
 
             return dtResult;
         }
@@ -842,9 +895,9 @@ namespace ParceYmlApp
             {
                 sSQL += $"[{dt.Columns[i].Caption}] nvarchar(MAX) NULL,";
             }
-            sSQL += "[row_id][int] IDENTITY(1, 1) NOT NULL";
+            sSQL += "[rowNom][int] IDENTITY(1, 1) NOT NULL";
             sSQL +=
-                $" CONSTRAINT [PK_{tTable}] PRIMARY KEY CLUSTERED ([row_id] ASC) " +
+                $" CONSTRAINT [PK_{tTable}] PRIMARY KEY CLUSTERED ([rowNom] ASC) " +
                 $" WITH(PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF" +
                 $", ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON[PRIMARY]) ON[PRIMARY] TEXTIMAGE_ON[PRIMARY]";
 

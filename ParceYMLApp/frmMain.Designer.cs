@@ -162,7 +162,7 @@
             this.btnParseInExcel.Name = "btnParseInExcel";
             this.btnParseInExcel.Size = new System.Drawing.Size(192, 28);
             this.btnParseInExcel.TabIndex = 24;
-            this.btnParseInExcel.Text = "Разбор в Excel";
+            this.btnParseInExcel.Text = "Разбор из Excel";
             this.btnParseInExcel.UseVisualStyleBackColor = true;
             this.btnParseInExcel.Click += new System.EventHandler(this.btnParseInExcel_Click);
             // 

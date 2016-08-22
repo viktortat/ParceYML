@@ -19,6 +19,8 @@ using ParceYmlApp.Enums;
 
 namespace ParceYmlApp
 {
+
+
     public partial class frmMain : Form
     {
         public frmMain()
@@ -50,23 +52,14 @@ namespace ParceYmlApp
             {
                 //ExcelWorksheet ws = package.Workbook.Worksheets["Фильтры"];
                 ExcelWorksheet ws = package.Workbook.Worksheets[(int)enWsName.Распарсен];
-                
 
                 //TODO Обработать ошибку задвоения колонок 
                 dt = GetDataTableFromWS(ws);
                 dataGridView1.DataSource = dt;
 
-
-
                 //dt.Columns.Cast<DataColumn>().GroupBy(v => v).Where(g => g.Count() > 1).ToList()
-
-                
                 //dt.Columns.Cast<DataColumn>().Select(x => x.ColumnName.ToUpper()).GroupBy(n=>n).Where(g=>g.Count()>1).ToList()
                 var arrName = dt.Columns.Cast<DataColumn>().Select(x => x.ColumnName).ToArray();
-
-
-
-
                 //lblInfo.Text =  $"Добавлено - {BulkСopyToDB(dt)} строки";
             }
         }
@@ -74,7 +67,6 @@ namespace ParceYmlApp
 
         private void button1_Click(object sender, EventArgs e)
         {
-
             XmlDocument doc = new XmlDocument();
             //doc.Load(@"d:\5552\yml.xml");
             //doc.Load(@"d:\5552\ymlTCN.xml");
@@ -92,7 +84,6 @@ namespace ParceYmlApp
                 ExcelWorksheet ws = package.Workbook.Worksheets.Add("Распарсен");
                 int cRow = 2;
                 //ExcelWorksheet wsPlus = package.Workbook.Worksheets[1]; //package.Workbook.Worksheets.Add("Правильные");
-
                 ws.Cells[1, 1].Value = "Артикул";
                 ws.Cells[1, 2].Value = "url";
                 ws.Cells[1, 3].Value = "price";
@@ -365,44 +356,73 @@ namespace ParceYmlApp
                 int cRowManuf = 3;
                 int cRowBrand = 3;
 
-                Color clrHead = Color.LightSkyBlue;
+                var clrHead = Color.LightSkyBlue;
+                var sCol = 1;
+                var sRow = 2;
+                
+                List<RowItem> lstWsTitle = new List<RowItem>
+                {
+                    new RowItem() {RowNom = sRow, ColNom = sCol++, NameCol = "available", Name = "available", Color = clrHead},
+                    new RowItem() {RowNom = sRow, ColNom = sCol++, NameCol = "id", Name = "id", Color = clrHead},
+                    new RowItem() {RowNom = sRow, ColNom = sCol++, NameCol = "name", Name = "name", Color = clrHead },
+                    new RowItem() {RowNom = sRow, ColNom = sCol++, NameCol = "url", Name = "url", Color = clrHead },
+                    new RowItem() {RowNom = sRow, ColNom = sCol++, NameCol = "price", Name = "price", Color = clrHead },
+                    new RowItem() {RowNom = sRow, ColNom = sCol++, NameCol = "currencyId", Name = "currencyId", Color = clrHead },
+                    new RowItem() {RowNom = sRow, ColNom = sCol++, NameCol = "categoryId", Name = "categoryId", Color = clrHead },
+                    new RowItem() {RowNom = sRow, ColNom = sCol++, NameCol = "categoryName", Name = "categoryName", Color = clrHead },
+                    new RowItem() {RowNom = sRow, ColNom = sCol++, NameCol = "delivery", Name = "delivery", Color = clrHead },
+                    new RowItem() {RowNom = sRow, ColNom = sCol++, NameCol = "vendorCode", Name = "vendorCode", Color = clrHead },
+                    new RowItem() {RowNom = sRow, ColNom = sCol++, NameCol = "vendor", Name = "vendor", Color = clrHead },
+                    new RowItem() {RowNom = sRow, ColNom = sCol++, NameCol = "description", Name = "description", Color = clrHead },
+                    new RowItem() {RowNom = sRow, ColNom = sCol++, NameCol = "picture", Name = "picture", Color = clrHead}
+                };
+                InitTitleWS(lstWsTitle, ws);
 
-                SetCellHeader(wsManuf.Cells[2, 1], clrHead, "№");
-                SetCellHeader(wsManuf.Cells[2, 2], clrHead, "Название");
-                SetCellHeader(wsManuf.Cells[2, 3], clrHead, "НазваниеTBN");
-                SetCellHeader(wsManuf.Cells[2, 4], clrHead, "Страна");
+                sCol = 1;
+                List<RowItem> lstTitleWsManuf = new List<RowItem>
+                {
+                    new RowItem() {RowNom = sRow, ColNom = sCol++, NameCol = "Nom", Name = "Nom", Color = clrHead},
+                    new RowItem() {RowNom = sRow, ColNom = sCol++, NameCol = "Название", Name = "name", Color = clrHead},
+                    new RowItem() {RowNom = sRow, ColNom = sCol++, NameCol = "НазваниеTBN", Name = "NameTbn", Color = clrHead},
+                    new RowItem() {RowNom = sRow, ColNom = sCol++, NameCol = "Страна", Name = "country", Color = clrHead}
+                };
+                InitTitleWS(lstTitleWsManuf, wsManuf);
 
-                SetCellHeader(wsBrand.Cells[2, 1], clrHead, "№");
-                //SetCellHeader(wsBrand.Cells[2, 2], clrHead, "КодБренда");
-                SetCellHeader(wsBrand.Cells[2, 2], clrHead, "Название");
-                SetCellHeader(wsBrand.Cells[2, 3], clrHead, "НазваниеTBN");
-                SetCellHeader(wsBrand.Cells[2, 4], clrHead, "Страна");
 
-                SetCellHeader(wsParam.Cells[2, 1], clrHead, "id");
-                SetCellHeader(wsParam.Cells[2, 2], clrHead, "Название");
-                SetCellHeader(wsParam.Cells[2, 3], clrHead, "НазваниеTBN");
-                SetCellHeader(wsParam.Cells[2, 4], clrHead, "Type");
+                sCol = 1;
+                List<RowItem> lstTitleWsBrand = new List<RowItem>
+                {
+                    new RowItem() {RowNom = sRow, ColNom = sCol++, NameCol = "№", Name = "Nom", Color = clrHead},
+                    //new RowItem() {RowNom = sRow, ColNom = sCol++, NameCol = "КодБренда", Name = "BrendCode", Color = clrHead},
+                    new RowItem() {RowNom = sRow, ColNom = sCol++, NameCol = "Название", Name = "ame", Color = clrHead},
+                    new RowItem() {RowNom = sRow, ColNom = sCol++, NameCol = "НазваниеTBN", Name = "NameTbn", Color = clrHead},
+                    new RowItem() {RowNom = sRow, ColNom = sCol++, NameCol = "Страна", Name = "Country", Color = clrHead}
+                };
+                InitTitleWS(lstTitleWsBrand, wsBrand);
 
-                SetCellHeader(wsCatigoty.Cells[2, 1], clrHead, "id");
-                SetCellHeader(wsCatigoty.Cells[2, 2], clrHead, "parentId");
-                SetCellHeader(wsCatigoty.Cells[2, 3], clrHead, "parentName");
-                SetCellHeader(wsCatigoty.Cells[2, 4], clrHead, "Name");
-                SetCellHeader(wsCatigoty.Cells[2, 5], clrHead, "НашId");
-                SetCellHeader(wsCatigoty.Cells[2, 6], clrHead, "НашаКатегория");
 
-                SetCellHeader(ws.Cells[2, 1], clrHead, "available");
-                SetCellHeader(ws.Cells[2, 2], clrHead, "id");
-                SetCellHeader(ws.Cells[2, 3], clrHead, "name");
-                SetCellHeader(ws.Cells[2, 4], clrHead, "url");
-                SetCellHeader(ws.Cells[2, 5], clrHead, "price");
-                SetCellHeader(ws.Cells[2, 6], clrHead, "currencyId");
-                SetCellHeader(ws.Cells[2, 7], clrHead, "categoryId");
-                SetCellHeader(ws.Cells[2, 8], clrHead, "categoryName");
-                SetCellHeader(ws.Cells[2, 9], clrHead, "delivery");
-                SetCellHeader(ws.Cells[2, 10], clrHead, "vendorCode");
-                SetCellHeader(ws.Cells[2, 11], clrHead, "vendor");
-                SetCellHeader(ws.Cells[2, 12], clrHead, "description");
-                SetCellHeader(ws.Cells[2, 13], clrHead, "picture");
+                sCol = 1;
+                List<RowItem> lstTitleWsParam = new List<RowItem>
+                {
+                    new RowItem() {RowNom = sRow, ColNom = sCol++, NameCol = "ID", Name = "Id", Color = clrHead},
+                    new RowItem() {RowNom = sRow, ColNom = sCol++, NameCol = "Название", Name = "Name", Color = clrHead},
+                    new RowItem() {RowNom = sRow, ColNom = sCol++, NameCol = "НазваниеTBN", Name = "NameTbn", Color = clrHead},
+                    new RowItem() {RowNom = sRow, ColNom = sCol++, NameCol = "Тип", Name = "ParamType", Color = clrHead}
+                };
+                InitTitleWS(lstTitleWsParam, wsParam);
+
+
+                sCol = 1;
+                List<RowItem> lstTitleWsCatigoty = new List<RowItem>
+                {
+                    new RowItem() {RowNom = sRow, ColNom = sCol++, NameCol = "ID", Name = "id", Color = clrHead},
+                    new RowItem() {RowNom = sRow, ColNom = sCol++, NameCol = "ParentId", Name = "parentId", Color = clrHead},
+                    new RowItem() {RowNom = sRow, ColNom = sCol++, NameCol = "parentName", Name = "parentName", Color = clrHead},
+                    new RowItem() {RowNom = sRow, ColNom = sCol++, NameCol = "Name", Name = "Name", Color = clrHead},
+                    new RowItem() {RowNom = sRow, ColNom = sCol++, NameCol = "НашId", Name = "row_id", Color = clrHead},
+                    new RowItem() {RowNom = sRow, ColNom = sCol++, NameCol = "НашаКатегория", Name = "CatId", Color = clrHead}
+                };
+                InitTitleWS(lstTitleWsCatigoty, wsCatigoty);
 
                 var cRowNom = 1;
                 foreach (var item in ManufactureArr)
@@ -544,6 +564,15 @@ namespace ParceYmlApp
             }
         }
 
+        private static void InitTitleWS(List<RowItem> lst, ExcelWorksheet ws)
+        {
+            foreach (var row in lst)
+            {
+                SetCellHeader(ws.Cells[row.RowNom, row.ColNom], row.Color, row.NameCol);
+                SetCellHeader(ws.Cells[row.RowNom-1, row.ColNom], Color.Lavender, row.Name);
+            }
+        }
+
         private static void SetCellHeader(ExcelRange rg, Color clr, string val)
         {
             rg.Style.Fill.PatternType = ExcelFillStyle.Solid;
@@ -657,7 +686,7 @@ namespace ParceYmlApp
             return ret1;
 
         }
-        
+
         /// <summary>
         /// Поля возвращаемой таблицы соответствуют названиям колонок первой строки из листа Excel
         /// </summary>
@@ -684,7 +713,7 @@ namespace ParceYmlApp
             var titleColName = (object[,])WorksheetRowsColl[0];
             for (int k = 0; k < titleColName.Length; k++)
             {
-              
+
                 if (titleColName[0, k] == null) continue;
                 dtResult.Columns.Add(titleColName[0, k].ToString(), typeof(string));
             }
@@ -704,7 +733,7 @@ namespace ParceYmlApp
                 i++;
             }
 
-            
+
             return dtResult;
         }
 
@@ -725,7 +754,7 @@ namespace ParceYmlApp
                 cmd.ExecuteNonQuery();
 
 
-                GreateTable(dt, connection,tTable);
+                GreateTable(dt, connection, tTable);
 
                 using (var bulkCopy = new SqlBulkCopy(connection))
                 {
@@ -735,7 +764,7 @@ namespace ParceYmlApp
                 insRowsCount = System.Convert.ToInt32(commandRowCount.ExecuteScalar());
             }
             return insRowsCount;
-
+            /*
             List<Item> MainTableColl = new List<Item>
             {
                 new Item() {id = 1,Name = "available"},
@@ -752,25 +781,26 @@ namespace ParceYmlApp
                 new Item() {id = 12,Name = "description"},
                 new Item() {id = 13,Name = "picture"}
             };
+            */
         }
 
         private void GreateTable(DataTable dt, SqlConnection connection, string tTable)
         {
-        
-                var sSQL = $"CREATE TABLE {tTable} (";
-                for (int i = 0; i < dt.Columns.Count-1; i++)
-                {
-                    sSQL += $"[{dt.Columns[i].Caption}] nvarchar(MAX) NULL,";
-                }
-                sSQL += "[row_id][int] IDENTITY(1, 1) NOT NULL";
-                sSQL +=
-                    $" CONSTRAINT [PK_{tTable}] PRIMARY KEY CLUSTERED ([row_id] ASC) " +
-                    $" WITH(PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF" +
-                    $", ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON[PRIMARY]) ON[PRIMARY] TEXTIMAGE_ON[PRIMARY]";
 
-                SqlCommand createtable = new SqlCommand(sSQL, connection);
-                createtable.ExecuteNonQuery();
-            
+            var sSQL = $"CREATE TABLE {tTable} (";
+            for (int i = 0; i < dt.Columns.Count - 1; i++)
+            {
+                sSQL += $"[{dt.Columns[i].Caption}] nvarchar(MAX) NULL,";
+            }
+            sSQL += "[row_id][int] IDENTITY(1, 1) NOT NULL";
+            sSQL +=
+                $" CONSTRAINT [PK_{tTable}] PRIMARY KEY CLUSTERED ([row_id] ASC) " +
+                $" WITH(PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF" +
+                $", ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON[PRIMARY]) ON[PRIMARY] TEXTIMAGE_ON[PRIMARY]";
+
+            SqlCommand createtable = new SqlCommand(sSQL, connection);
+            createtable.ExecuteNonQuery();
+
         }
     }
 }

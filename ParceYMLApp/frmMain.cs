@@ -14,13 +14,12 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using OfficeOpenXml.Style;
 using ParceYmlApp.Enums;
 
 namespace ParceYmlApp
 {
-
-
     public partial class frmMain : Form
     {
         public frmMain()
@@ -35,9 +34,14 @@ namespace ParceYmlApp
             Program.PathExcelFileImport = AppDomain.CurrentDomain.BaseDirectory + @"testXml\soap.xml";
             Program.PathFolderBase = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"testXml");
             txbPathSelector.Text = Program.PathExcelFileImport;
+
+            //(DateTime.Now).Subtract(new DateTime(1970, 1, 1)).TotalSeconds
+            //var random = new Random((int)DateTime.Now.Ticks);
+            //var s = DateTime.Now.ToString("yyyyMMdd");
+            //Random rand = new Random(Guid.NewGuid().GetHashCode());
         }
 
-        private void btnParseInExcel_Click(object sender, EventArgs e)
+        private void btnParseFromExcel_Click(object sender, EventArgs e)
         {
             //Program.PathFolderBase
             var fName = "TestOut.xlsx";
@@ -329,10 +333,13 @@ namespace ParceYmlApp
 
             doc.Load(FileName);
             XmlElement root = doc.DocumentElement;
-            var nodeList = GetOffer(root);
-            var brandArr = GetBrandColl(root);
-            var ManufactureArr = GetManufacturerColl(root);
-            var CategoriesColl = GetCategoriesColl(root);
+            var productColl = GetOffer(root);
+
+            var param1 = GetParam(root);
+
+            var brandColl = GetBrandColl(root);
+            var manufactureColl = GetManufacturerColl(root);
+            var categoriesColl = GetCategoriesColl(root);
 
             //if (chbCopyToDB.Checked) BulkСopyToDB(root);
 
@@ -424,8 +431,10 @@ namespace ParceYmlApp
                 };
                 InitTitleWS(lstTitleWsCatigoty, wsCatigoty);
 
+
+
                 var cRowNom = 1;
-                foreach (var item in ManufactureArr)
+                foreach (var item in manufactureColl)
                 {
                     wsManuf.Cells[cRowManuf, 1].Value = cRowNom;
                     //wsManuf.Cells[cRowManuf, 2].Value = item.Name;
@@ -437,7 +446,7 @@ namespace ParceYmlApp
                 }
 
                 cRowNom = 1;
-                foreach (Brand item in brandArr)
+                foreach (Brand item in brandColl)
                 {
                     wsBrand.Cells[cRowBrand, 1].Value = cRowNom;
                     //wsBrand.Cells[cRowBrand, 2].Value = item.brandCode;
@@ -450,12 +459,12 @@ namespace ParceYmlApp
                 }
 
 
-                foreach (var item in CategoriesColl)
+                foreach (var item in categoriesColl)
                 {
                     wsCatigoty.Cells[cRowCat, 1].Value = item.id;
                     wsCatigoty.Cells[cRowCat, 2].Value = item.parentId;
                     wsCatigoty.Cells[cRowCat, 3].Value =
-                        CategoriesColl.Where(x => x.id == item.parentId).Select(x => x.Name).FirstOrDefault();
+                        categoriesColl.Where(x => x.id == item.parentId).Select(x => x.Name).FirstOrDefault();
                     wsCatigoty.Cells[cRowCat, 4].Value = item.Name;
                     SetCellHeader(wsCatigoty.Cells[cRowCat, 5], Color.LightGoldenrodYellow, "");
                     //SetCellHeader(wsCatigoty.Cells[cRowCat, 6], Color.LightGoldenrodYellow, "");
@@ -468,7 +477,7 @@ namespace ParceYmlApp
 
                 var startCol = 14;
 
-                foreach (XmlNode isbn in nodeList)
+                foreach (XmlNode isbn in productColl)
                 {
                     XmlNodeList nodeParams = isbn.SelectNodes("param");
                     foreach (XmlNode p in nodeParams)
@@ -506,7 +515,7 @@ namespace ParceYmlApp
                 wsParam.Cells[6, 7].Value = "fv - затягиваем в фильтры и в ВГХ";
                 wsParam.Cells[7, 7].Value = "n - не затягивать";
 
-                foreach (XmlNode isbn in nodeList)
+                foreach (XmlNode isbn in productColl)
                 {
                     ws.Cells[cRow, 1].Value = isbn.Attributes["available"].InnerText;
                     ws.Cells[cRow, 2].Value = isbn.Attributes["id"].InnerText;
@@ -516,7 +525,7 @@ namespace ParceYmlApp
                     ws.Cells[cRow, 6].Value = isbn["currencyId"].InnerText;
                     ws.Cells[cRow, 7].Value = isbn["categoryId"].InnerText;
                     ws.Cells[cRow, 8].Value =
-                        CategoriesColl.Where(x => x.id == isbn["categoryId"].InnerText)
+                        categoriesColl.Where(x => x.id == isbn["categoryId"].InnerText)
                             .Select(x => x.Name)
                             .FirstOrDefault();
                     ws.Cells[cRow, 9].Value = isbn["delivery"].InnerText;
@@ -631,21 +640,40 @@ namespace ParceYmlApp
                 .OrderBy(r => r["name"].InnerText);
         }
 
-
-        private void button3_Click(object sender, EventArgs e)
+        private static IEnumerable<RowItem> GetParam(XmlElement root)
         {
-            XmlDocument doc = new XmlDocument();
-            string FileName = Program.PathExcelFileImport;
 
-            doc.Load(FileName);
-            XmlElement root = doc.DocumentElement;
-            //var coll = GetCategoriesColl(root);
-            //var coll = GetBrandColl(root);
-            var coll = GetManufacturerColl(root);
-            lblInfo.Text = $"Выбрано - {coll.Count()} строк";
-            dataGridView1.DataSource = SqlHelper.ToDataTable(coll.ToList());
+            var ret = root.SelectNodes("/yml_catalog/shop/offers/offer/param")
+                .Cast<XmlNode>()
+                .Select(r => new RowItem
+                {
+                    InnerText = r.InnerXml,
+                    Name = r.Attributes["name"]?.InnerText??"",
+                    Unit = r.Attributes["unit"]?.InnerText??""
+                });
+
+            var duplicates = ret.Select(r => r.Name).Distinct().Select(r=>r.ToUpper())
+                                .GroupBy(g => g).Where(w => w.Count() > 1).Select(w=>w.First()).ToList();
+            if (duplicates.Count>0)
+            {
+                var sErr = "Найдены дубликаты названий фильтров! \n" +
+                           "Исправьте исходный файл и повторите затяжку\n";
+                foreach (var r in duplicates)
+                {
+                    sErr += $"\t'{r}'\n";
+                }
+                sErr += $"Выйти из программы?";
+
+                DialogResult dialogResult  = MessageBox.Show(sErr,"Ошибка!",MessageBoxButtons.OKCancel,MessageBoxIcon.Error);
+                Console.WriteLine(sErr);
+                if (dialogResult == DialogResult.OK)
+                {
+                    Application.Exit();
+                    return null;
+                }
+            }
+            return ret;
         }
-
 
         private static IEnumerable<Brand> GetBrandColl(XmlElement root)
         {
@@ -686,6 +714,21 @@ namespace ParceYmlApp
             return ret1;
 
         }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            XmlDocument doc = new XmlDocument();
+            string FileName = Program.PathExcelFileImport;
+
+            doc.Load(FileName);
+            XmlElement root = doc.DocumentElement;
+            //var coll = GetCategoriesColl(root);
+            //var coll = GetBrandColl(root);
+            var coll = GetManufacturerColl(root);
+            lblInfo.Text = $"Выбрано - {coll.Count()} строк";
+            dataGridView1.DataSource = SqlHelper.ToDataTable(coll.ToList());
+        }
+
 
         /// <summary>
         /// Поля возвращаемой таблицы соответствуют названиям колонок первой строки из листа Excel
@@ -736,9 +779,10 @@ namespace ParceYmlApp
 
             return dtResult;
         }
-
+        
         private long BulkСopyToDB(DataTable dt)
         {
+            //DateTime.Now.Millisecond
             var insRowsCount = 0;
             using (var connection = new SqlConnection(Program.connectionStr))
             {

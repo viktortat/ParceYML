@@ -346,7 +346,7 @@ namespace ParceYmlApp
             string fileName = Path.GetFileNameWithoutExtension(FileName) + ".xlsx";
             string outputDir = Path.GetDirectoryName(FileName);
 
-            Dictionary<string, int> dAttr = new Dictionary<string, int>();
+            
 
             var file = new FileInfo(outputDir + '\\' + fileName);
             using (ExcelPackage package = new ExcelPackage())
@@ -369,27 +369,30 @@ namespace ParceYmlApp
                 
                 List<RowItem> lstWsTitle = new List<RowItem>
                 {
-                    new RowItem() {RowNom = sRow, ColNom = sCol++, NameCol = "available", Name = "available", Color = clrHead},
-                    new RowItem() {RowNom = sRow, ColNom = sCol++, NameCol = "id", Name = "id", Color = clrHead},
-                    new RowItem() {RowNom = sRow, ColNom = sCol++, NameCol = "name", Name = "name", Color = clrHead },
-                    new RowItem() {RowNom = sRow, ColNom = sCol++, NameCol = "url", Name = "url", Color = clrHead },
-                    new RowItem() {RowNom = sRow, ColNom = sCol++, NameCol = "price", Name = "price", Color = clrHead },
-                    new RowItem() {RowNom = sRow, ColNom = sCol++, NameCol = "currencyId", Name = "currencyId", Color = clrHead },
-                    new RowItem() {RowNom = sRow, ColNom = sCol++, NameCol = "categoryId", Name = "categoryId", Color = clrHead },
-                    new RowItem() {RowNom = sRow, ColNom = sCol++, NameCol = "categoryName", Name = "categoryName", Color = clrHead },
-                    new RowItem() {RowNom = sRow, ColNom = sCol++, NameCol = "delivery", Name = "delivery", Color = clrHead },
-                    new RowItem() {RowNom = sRow, ColNom = sCol++, NameCol = "vendorCode", Name = "vendorCode", Color = clrHead },
-                    new RowItem() {RowNom = sRow, ColNom = sCol++, NameCol = "vendor", Name = "vendor", Color = clrHead },
-                    new RowItem() {RowNom = sRow, ColNom = sCol++, NameCol = "description", Name = "description", Color = clrHead },
-                    new RowItem() {RowNom = sRow, ColNom = sCol++, NameCol = "picture", Name = "picture", Color = clrHead}
+                    new RowItem() {RowNom = sRow, ColNom = sCol++, NameCol = "Nom", Name = "Row_id", Color = clrHead},
+                    new RowItem() {RowNom = sRow, ColNom = sCol++, NameCol = "Доступен", Name = "Available", Color = clrHead},
+                    new RowItem() {RowNom = sRow, ColNom = sCol++, NameCol = "Код-продукта", Name = "ProductId", Color = clrHead},
+                    new RowItem() {RowNom = sRow, ColNom = sCol++, NameCol = "Название", Name = "Name", Color = clrHead },
+                    new RowItem() {RowNom = sRow, ColNom = sCol++, NameCol = "Тип", Name = "ProdType", Color = clrHead },
+                    new RowItem() {RowNom = sRow, ColNom = sCol++, NameCol = "Вид", Name = "ProdKind", Color = clrHead },
+                    new RowItem() {RowNom = sRow, ColNom = sCol++, NameCol = "url", Name = "Url", Color = clrHead },
+                    new RowItem() {RowNom = sRow, ColNom = sCol++, NameCol = "Цена", Name = "Price", Color = clrHead },
+                    new RowItem() {RowNom = sRow, ColNom = sCol++, NameCol = "Валюта", Name = "CurrencyId", Color = clrHead },
+                    new RowItem() {RowNom = sRow, ColNom = sCol++, NameCol = "Категория-код", Name = "CategoryId", Color = clrHead },
+                    new RowItem() {RowNom = sRow, ColNom = sCol++, NameCol = "Категория", Name = "CategoryName", Color = clrHead },
+                    new RowItem() {RowNom = sRow, ColNom = sCol++, NameCol = "Доставка", Name = "Delivery", Color = clrHead },
+                    new RowItem() {RowNom = sRow, ColNom = sCol++, NameCol = "Продавец-код", Name = "VendorCode", Color = clrHead },
+                    new RowItem() {RowNom = sRow, ColNom = sCol++, NameCol = "Продавец", Name = "Vendor", Color = clrHead },
+                    new RowItem() {RowNom = sRow, ColNom = sCol++, NameCol = "Описание", Name = "Description", Color = clrHead },
+                    new RowItem() {RowNom = sRow, ColNom = sCol++, NameCol = "Фото", Name = "Picture", Color = clrHead}
                 };
                 InitTitleWS(lstWsTitle, ws);
 
                 sCol = 1;
                 List<RowItem> lstTitleWsManuf = new List<RowItem>
                 {
-                    new RowItem() {RowNom = sRow, ColNom = sCol++, NameCol = "Nom", Name = "Nom", Color = clrHead},
-                    new RowItem() {RowNom = sRow, ColNom = sCol++, NameCol = "Название", Name = "name", Color = clrHead},
+                    new RowItem() {RowNom = sRow, ColNom = sCol++, NameCol = "Nom", Name = "Row_id", Color = clrHead},
+                    new RowItem() {RowNom = sRow, ColNom = sCol++, NameCol = "Название", Name = "Name", Color = clrHead},
                     new RowItem() {RowNom = sRow, ColNom = sCol++, NameCol = "НазваниеTBN", Name = "NameTbn", Color = clrHead},
                     new RowItem() {RowNom = sRow, ColNom = sCol++, NameCol = "Страна", Name = "country", Color = clrHead}
                 };
@@ -399,9 +402,9 @@ namespace ParceYmlApp
                 sCol = 1;
                 List<RowItem> lstTitleWsBrand = new List<RowItem>
                 {
-                    new RowItem() {RowNom = sRow, ColNom = sCol++, NameCol = "№", Name = "Nom", Color = clrHead},
+                    new RowItem() {RowNom = sRow, ColNom = sCol++, NameCol = "Nom", Name = "Row_id", Color = clrHead},
                     //new RowItem() {RowNom = sRow, ColNom = sCol++, NameCol = "КодБренда", Name = "BrendCode", Color = clrHead},
-                    new RowItem() {RowNom = sRow, ColNom = sCol++, NameCol = "Название", Name = "ame", Color = clrHead},
+                    new RowItem() {RowNom = sRow, ColNom = sCol++, NameCol = "Название", Name = "Name", Color = clrHead},
                     new RowItem() {RowNom = sRow, ColNom = sCol++, NameCol = "НазваниеTBN", Name = "NameTbn", Color = clrHead},
                     new RowItem() {RowNom = sRow, ColNom = sCol++, NameCol = "Страна", Name = "Country", Color = clrHead}
                 };
@@ -411,7 +414,8 @@ namespace ParceYmlApp
                 sCol = 1;
                 List<RowItem> lstTitleWsParam = new List<RowItem>
                 {
-                    new RowItem() {RowNom = sRow, ColNom = sCol++, NameCol = "ID", Name = "Id", Color = clrHead},
+                    new RowItem() {RowNom = sRow, ColNom = sCol++, NameCol = "Nom", Name = "Row_id", Color = clrHead},
+                    new RowItem() {RowNom = sRow, ColNom = sCol++, NameCol = "ParamId", Name = "ParamId", Color = clrHead},
                     new RowItem() {RowNom = sRow, ColNom = sCol++, NameCol = "Название", Name = "Name", Color = clrHead},
                     new RowItem() {RowNom = sRow, ColNom = sCol++, NameCol = "НазваниеTBN", Name = "NameTbn", Color = clrHead},
                     new RowItem() {RowNom = sRow, ColNom = sCol++, NameCol = "Тип", Name = "ParamType", Color = clrHead}
@@ -422,12 +426,12 @@ namespace ParceYmlApp
                 sCol = 1;
                 List<RowItem> lstTitleWsCatigoty = new List<RowItem>
                 {
-                    new RowItem() {RowNom = sRow, ColNom = sCol++, NameCol = "ID", Name = "id", Color = clrHead},
-                    new RowItem() {RowNom = sRow, ColNom = sCol++, NameCol = "ParentId", Name = "parentId", Color = clrHead},
-                    new RowItem() {RowNom = sRow, ColNom = sCol++, NameCol = "parentName", Name = "parentName", Color = clrHead},
-                    new RowItem() {RowNom = sRow, ColNom = sCol++, NameCol = "Name", Name = "Name", Color = clrHead},
-                    new RowItem() {RowNom = sRow, ColNom = sCol++, NameCol = "НашId", Name = "row_id", Color = clrHead},
-                    new RowItem() {RowNom = sRow, ColNom = sCol++, NameCol = "НашаКатегория", Name = "CatId", Color = clrHead}
+                    new RowItem() {RowNom = sRow, ColNom = sCol++, NameCol = "Nom", Name = "Row_id", Color = clrHead},
+                    new RowItem() {RowNom = sRow, ColNom = sCol++, NameCol = "CatID", Name = "CatId", Color = clrHead},
+                    new RowItem() {RowNom = sRow, ColNom = sCol++, NameCol = "ParentId", Name = "ParentId", Color = clrHead},
+                    new RowItem() {RowNom = sRow, ColNom = sCol++, NameCol = "ParentName", Name = "ParentName", Color = clrHead},
+                    new RowItem() {RowNom = sRow, ColNom = sCol++, NameCol = "Название", Name = "Name", Color = clrHead},
+                    new RowItem() {RowNom = sRow, ColNom = sCol++, NameCol = "НашId", Name = "CatIdDB", Color = clrHead}
                 };
                 InitTitleWS(lstTitleWsCatigoty, wsCatigoty);
 
@@ -458,16 +462,18 @@ namespace ParceYmlApp
                     cRowBrand++;
                 }
 
-
+                cRowNom = 1;
                 foreach (var item in categoriesColl)
                 {
-                    wsCatigoty.Cells[cRowCat, 1].Value = item.id;
-                    wsCatigoty.Cells[cRowCat, 2].Value = item.parentId;
-                    wsCatigoty.Cells[cRowCat, 3].Value =
+                    wsCatigoty.Cells[cRowCat, 1].Value = cRowNom;
+                    wsCatigoty.Cells[cRowCat, 2].Value = item.id;
+                    wsCatigoty.Cells[cRowCat, 3].Value = item.parentId;
+                    wsCatigoty.Cells[cRowCat, 4].Value =
                         categoriesColl.Where(x => x.id == item.parentId).Select(x => x.Name).FirstOrDefault();
-                    wsCatigoty.Cells[cRowCat, 4].Value = item.Name;
-                    SetCellHeader(wsCatigoty.Cells[cRowCat, 5], Color.LightGoldenrodYellow, "");
+                    wsCatigoty.Cells[cRowCat, 5].Value = item.Name;
+                    SetCellHeader(wsCatigoty.Cells[cRowCat, 6], Color.LightGoldenrodYellow, "");
                     //SetCellHeader(wsCatigoty.Cells[cRowCat, 6], Color.LightGoldenrodYellow, "");
+                    cRowNom++;
                     cRowCat++;
                 }
 
@@ -475,38 +481,42 @@ namespace ParceYmlApp
                 //ws.Cells[1, 11].Value = "barcode";
 
 
-                var startCol = 14;
+                var startCol = 17;
 
+                Dictionary<string, int> dicParam = new Dictionary<string, int>();
                 foreach (XmlNode isbn in productColl)
                 {
                     XmlNodeList nodeParams = isbn.SelectNodes("param");
                     foreach (XmlNode p in nodeParams)
                     {
-                        if (!dAttr.ContainsKey(p.Attributes["name"].InnerText))
+                        if (!dicParam.ContainsKey(p.Attributes["name"].InnerText))
                         {
-                            dAttr.Add(p.Attributes["name"].InnerText, startCol);
+                            dicParam.Add(p.Attributes["name"].InnerText, startCol);
                             startCol++;
                         }
                     }
                 }
 
-                var d = from x in dAttr
+                var dParam = (from x in dicParam
                         select new
                         {
                             Name = x.Key,
                             Val = x.Value
-                        };
+                        }).OrderBy(x=>x.Name);
 
-
-                foreach (var item in d)
+                cRowNom = 1;
+                foreach (var item in dParam)
                 {
+                    SetCellHeader(ws.Cells[1, item.Val], Color.AntiqueWhite, item.Name);
                     SetCellHeader(ws.Cells[2, item.Val], Color.LightBlue, item.Name);
 
-                    wsParam.Cells[cRowAtr, 1].Value = item.Val;
+                    wsParam.Cells[cRowAtr, 1].Value = cRowNom;
+                    wsParam.Cells[cRowAtr, 2].Value = item.Val;
                     //wsParam.Cells[cRowAtr, 2].Value = item.Name;
-                    SetCellHeader(wsParam.Cells[cRowAtr, 2], Color.LightGray, item.Name);
-                    wsParam.Cells[cRowAtr, 3].Value = item.Name;
-                    wsParam.Cells[cRowAtr, 4].Value = "f";
+                    SetCellHeader(wsParam.Cells[cRowAtr, 3], Color.LightGray, item.Name);
+                    wsParam.Cells[cRowAtr, 4].Value = item.Name;
+                    wsParam.Cells[cRowAtr, 5].Value = "f";
+                    cRowNom++;
                     cRowAtr++;
                 }
 
@@ -515,24 +525,28 @@ namespace ParceYmlApp
                 wsParam.Cells[6, 7].Value = "fv - затягиваем в фильтры и в ВГХ";
                 wsParam.Cells[7, 7].Value = "n - не затягивать";
 
+                cRowNom = 1;
                 foreach (XmlNode isbn in productColl)
                 {
-                    ws.Cells[cRow, 1].Value = isbn.Attributes["available"].InnerText;
-                    ws.Cells[cRow, 2].Value = isbn.Attributes["id"].InnerText;
-                    ws.Cells[cRow, 3].Value = isbn["name"].InnerText;
-                    ws.Cells[cRow, 4].Value = isbn["url"].InnerText;
-                    ws.Cells[cRow, 5].Value = isbn["price"].InnerText;
-                    ws.Cells[cRow, 6].Value = isbn["currencyId"].InnerText;
-                    ws.Cells[cRow, 7].Value = isbn["categoryId"].InnerText;
-                    ws.Cells[cRow, 8].Value =
+                    ws.Cells[cRow, 1].Value = cRowNom;
+                    ws.Cells[cRow, 2].Value = isbn.Attributes["available"].InnerText;
+                    ws.Cells[cRow, 3].Value = isbn.Attributes["id"].InnerText;
+                    ws.Cells[cRow, 4].Value = isbn["name"].InnerText;
+                    ws.Cells[cRow, 5].Value = "";
+                    ws.Cells[cRow, 6].Value = "";
+                    ws.Cells[cRow, 7].Value = isbn["url"].InnerText;
+                    ws.Cells[cRow, 8].Value = isbn["price"].InnerText;
+                    ws.Cells[cRow, 9].Value = isbn["currencyId"].InnerText;
+                    ws.Cells[cRow, 10].Value = isbn["categoryId"].InnerText;
+                    ws.Cells[cRow, 11].Value =
                         categoriesColl.Where(x => x.id == isbn["categoryId"].InnerText)
                             .Select(x => x.Name)
                             .FirstOrDefault();
-                    ws.Cells[cRow, 9].Value = isbn["delivery"].InnerText;
-                    ws.Cells[cRow, 10].Value = isbn["vendorCode"].InnerText;
-                    ws.Cells[cRow, 11].Value = isbn["vendor"]?.InnerText ?? "";
-                    ws.Cells[cRow, 12].Value = isbn["description"]?.InnerText ?? "";
-                    ws.Cells[cRow, 13].Value = isbn["picture"].InnerText;
+                    ws.Cells[cRow, 12].Value = isbn["delivery"].InnerText;
+                    ws.Cells[cRow, 13].Value = isbn["vendorCode"].InnerText;
+                    ws.Cells[cRow, 14].Value = isbn["vendor"]?.InnerText ?? "";
+                    ws.Cells[cRow, 15].Value = isbn["description"]?.InnerText ?? "";
+                    ws.Cells[cRow, 16].Value = isbn["picture"].InnerText;
 
                     XmlNodeList nodeParams = isbn.SelectNodes("param");
                     foreach (XmlNode p in nodeParams)
@@ -540,17 +554,9 @@ namespace ParceYmlApp
                         var val = p.InnerText;
                         var unit = p.Attributes["unit"]?.InnerText ?? "";
                         unit = unit.Length > 0 ? @"###" + unit : "";
-                        ws.Cells[cRow, dAttr[p.Attributes["name"].InnerText]].Value = $"{val} {unit}";
-
-                        if (p.Attributes["name"].InnerText == "Производитель")
-                        {
-                        }
-
-                        if (p.Attributes["name"].InnerText == "Бренд")
-                        {
-                        }
-
+                        ws.Cells[cRow, dicParam[p.Attributes["name"].InnerText]].Value = $"{val} {unit}";
                     }
+                    cRowNom++;
                     cRow++;
                 }
 
@@ -586,7 +592,7 @@ namespace ParceYmlApp
         {
             rg.Style.Fill.PatternType = ExcelFillStyle.Solid;
             rg.Style.Fill.BackgroundColor.SetColor(clr);
-            rg.Value = val;
+            if (!string.IsNullOrEmpty(val)) rg.Value = val;
         }
 
         private static IEnumerable<Category> GetCategoriesColl_old(XmlElement root)

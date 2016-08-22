@@ -13,4 +13,15 @@ namespace ParceYmlApp
         public string Unit { get; set; }
         public string InnerText { get; set; }
     }
+
+
+    class RowItemParam
+    {
+        //Row_id ParamId Name NameTbn ParamType
+        public int Row_id { get; set; }
+        public int ParamId { get; set; }
+        public string Name { get; set; }
+        public string NameTbn { get; set; }
+        public string ParamType { get; set; }
+    }
 }

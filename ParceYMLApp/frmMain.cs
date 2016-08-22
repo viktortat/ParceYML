@@ -65,7 +65,7 @@ namespace ParceYmlApp
             //var FileNameIn = @"c:\333\ParceYML\soap.xlsx";
 
 
-            var FileNameIn = Path.GetFullPath(AppDomain.CurrentDomain.BaseDirectory+ @"testXml\soapIdeal.xlsx");
+            var FileNameIn = Path.GetFullPath(AppDomain.CurrentDomain.BaseDirectory + @"testXml\soapIdeal.xlsx");
             //var FileNameIn = Path.GetFullPath(AppDomain.CurrentDomain.BaseDirectory+ @"testXml\soap.xlsx");
             txbPathSelector.Text = FileNameIn;
 
@@ -78,7 +78,7 @@ namespace ParceYmlApp
                 //ExcelWorksheet ws = package.Workbook.Worksheets["Фильтры"];
                 ExcelWorksheet ws = package.Workbook.Worksheets[(int)enWsName.Распарсен];
 
-                
+
                 List<string> columnNames = new List<string>();
                 foreach (var firstRowCell in ws.Cells[ws.Dimension.Start.Row, ws.Dimension.Start.Column, 1, ws.Dimension.End.Column])
                     columnNames.Add(firstRowCell.Text);
@@ -103,10 +103,16 @@ namespace ParceYmlApp
                 }
 
                 dt = GetDataTableFromWS(ws);
-                dataGridView1.DataSource = dt;
-                lblInfo.Text = $"Добавлено - {BulkСopyToDB(dt)} строки";
+                //dataGridView1.DataSource = dt;
+
+
+
+                //lblInfo.Text = $"Добавлено - {BulkСopyToDB(dt)} строки";
+                insParamsInDb(dt, package);
+
             }
         }
+
         //list.GroupBy(v => v).Where(g => g.Count() > 1).Select(g => g.Key)
 
         private void button1_Click(object sender, EventArgs e)
@@ -375,7 +381,7 @@ namespace ParceYmlApp
             XmlElement root = doc.DocumentElement;
             var productColl = GetOffer(root);
 
-            var param1 = GetParam(root);
+
 
             var brandColl = GetBrandColl(root);
             var manufactureColl = GetManufacturerColl(root);
@@ -385,7 +391,7 @@ namespace ParceYmlApp
 
             string fileName = Path.GetFileNameWithoutExtension(FileName) + ".xlsx";
             string outputDir = Path.GetDirectoryName(FileName);
-            
+
             var file = new FileInfo(outputDir + '\\' + fileName);
             using (ExcelPackage package = new ExcelPackage())
             {
@@ -404,7 +410,7 @@ namespace ParceYmlApp
                 var clrHead = Color.LightSkyBlue;
                 var sCol = 1;
                 var sRow = 2;
-                
+
                 List<RowItem> lstWsTitle = new List<RowItem>
                 {
                     new RowItem() {RowNom = sRow, ColNom = sCol++, NameCol = "Nom", Name = "Row_id", Color = clrHead},
@@ -536,11 +542,11 @@ namespace ParceYmlApp
                 }
 
                 var dParam = (from x in dicParam
-                        select new
-                        {
-                            Name = x.Key,
-                            Val = x.Value
-                        }).OrderBy(x=>x.Name);
+                              select new
+                              {
+                                  Name = x.Key,
+                                  Val = x.Value
+                              }).OrderBy(x => x.Name);
 
                 cRowNom = 1;
                 foreach (var item in dParam)
@@ -622,7 +628,7 @@ namespace ParceYmlApp
             foreach (var row in lst)
             {
                 SetCellHeader(ws.Cells[row.RowNom, row.ColNom], row.Color, row.NameCol);
-                SetCellHeader(ws.Cells[row.RowNom-1, row.ColNom], Color.Lavender, row.Name);
+                SetCellHeader(ws.Cells[row.RowNom - 1, row.ColNom], Color.Lavender, row.Name);
             }
         }
 
@@ -692,13 +698,13 @@ namespace ParceYmlApp
                 .Select(r => new RowItem
                 {
                     InnerText = r.InnerXml,
-                    Name = r.Attributes["name"]?.InnerText??"",
-                    Unit = r.Attributes["unit"]?.InnerText??""
+                    Name = r.Attributes["name"]?.InnerText ?? "",
+                    Unit = r.Attributes["unit"]?.InnerText ?? ""
                 });
 
-            var duplicates = ret.Select(r => r.Name).Distinct().Select(r=>r.ToUpper())
-                                .GroupBy(g => g).Where(w => w.Count() > 1).Select(w=>w.First()).ToList();
-            if (duplicates.Count>0)
+            var duplicates = ret.Select(r => r.Name).Distinct().Select(r => r.ToUpper())
+                                .GroupBy(g => g).Where(w => w.Count() > 1).Select(w => w.First()).ToList();
+            if (duplicates.Count > 0)
             {
                 var sErr = "Найдены дубликаты названий фильтров! \n" +
                            "Исправьте исходный файл и повторите затяжку\n";
@@ -708,7 +714,7 @@ namespace ParceYmlApp
                 }
                 sErr += $"Выйти из программы?";
 
-                DialogResult dialogResult  = MessageBox.Show(sErr,"Ошибка!",MessageBoxButtons.OKCancel,MessageBoxIcon.Error);
+                DialogResult dialogResult = MessageBox.Show(sErr, "Ошибка!", MessageBoxButtons.OKCancel, MessageBoxIcon.Error);
                 Console.WriteLine(sErr);
                 if (dialogResult == DialogResult.OK)
                 {
@@ -783,8 +789,8 @@ namespace ParceYmlApp
             List<object> WorksheetRowsColl = new List<object>();
             var rowCount = ws.Dimension.End.Row; //Utils.GetLastUsedRow(ws);
             var сolCount = ws.Dimension.End.Column;
-            
-   
+
+
             for (var rowNum = 1; rowNum <= rowCount; rowNum++)
             {
                 var row = ws.Cells[rowNum, 1, rowNum, сolCount];
@@ -838,7 +844,7 @@ namespace ParceYmlApp
 
             return dtResult;
         }
-        
+
         private long BulkСopyToDB(DataTable dt)
         {
             //DateTime.Now.Millisecond
@@ -903,6 +909,44 @@ namespace ParceYmlApp
 
             SqlCommand createtable = new SqlCommand(sSQL, connection);
             createtable.ExecuteNonQuery();
+
+        }
+
+        private void insParamsInDb(DataTable dt, ExcelPackage ex)
+        {
+            ExcelWorksheet wsParam = ex.Workbook.Worksheets[(int)enWsName.Фильтры];
+            var dtParams = GetDataTableFromWS(wsParam);
+            List<RowItemParam> lp = new List<RowItemParam>();
+            foreach (DataRow row in dtParams.Rows)
+            {
+
+                //todo - сделать!
+                lp.Add(new RowItemParam()
+                {
+                    //Row_id ParamId Name NameTbn ParamType
+                    Row_id = (int)row["Row_id"],
+                    ParamId = (int)row["ParamId"],
+                    Name = (string)row["Name"],
+                    NameTbn = (string)row["NameTbn"],
+                    ParamType = (string)row["ParamType"]
+                });
+            }
+
+            var dt2 = SqlHelper.ToDataTable(lp.ToList());
+            dataGridView1.DataSource = dt2;
+
+            //Row_id ParamId Name NameTbn ParamType
+
+            /*
+            IEnumerable<RowItem> query = dtParams.AsEnumerable()
+                //where order.Field<DateTime>("OrderDate") > new DateTime(2001, 8, 1)
+                .Select((c, index) => new RowItem
+                {
+                    RowNom = index,
+                    Name = c[0].ToString(),
+                    NameCol = c[1].ToString()
+                }).Where(b => b.RowNom > 0).ToList();
+            */
 
         }
     }

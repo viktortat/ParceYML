@@ -125,6 +125,7 @@
             this.chbCopyToDB.TabIndex = 20;
             this.chbCopyToDB.Text = "Записать в БД";
             this.chbCopyToDB.UseVisualStyleBackColor = true;
+            this.chbCopyToDB.CheckedChanged += new System.EventHandler(this.chbCopyToDB_CheckedChanged);
             // 
             // button3
             // 
@@ -149,12 +150,15 @@
             // 
             // lblInfo
             // 
-            this.lblInfo.AutoSize = true;
-            this.lblInfo.Location = new System.Drawing.Point(178, 130);
+            this.lblInfo.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblInfo.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.lblInfo.Location = new System.Drawing.Point(7, 126);
             this.lblInfo.Name = "lblInfo";
-            this.lblInfo.Size = new System.Drawing.Size(16, 13);
+            this.lblInfo.Size = new System.Drawing.Size(401, 23);
             this.lblInfo.TabIndex = 23;
             this.lblInfo.Text = "...";
+            this.lblInfo.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // btnParseFromExcel
             // 

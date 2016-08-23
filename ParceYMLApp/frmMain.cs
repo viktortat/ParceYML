@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using System.Diagnostics;
+using System.Globalization;
 using System.Runtime.CompilerServices;
 using OfficeOpenXml.Style;
 using ParceYmlApp.Enums;
@@ -46,6 +47,8 @@ namespace ParceYmlApp
                 Program.connectionStr = ConfigurationManager.ConnectionStrings["TbnProd.Local"].ConnectionString;
             Program.PathExcelFileImport = AppDomain.CurrentDomain.BaseDirectory + @"testXml\soap.xml";
             Program.PathFolderBase = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"testXml");
+            Program.InsertToDB = chbCopyToDB.Checked;
+
             txbPathSelector.Text = Program.PathExcelFileImport;
 
             //(DateTime.Now).Subtract(new DateTime(1970, 1, 1)).TotalSeconds
@@ -56,7 +59,7 @@ namespace ParceYmlApp
 
         private void btnParseFromExcel_Click(object sender, EventArgs e)
         {
-            //select * from tmp_YML2
+           
             //Program.PathFolderBase
             var fName = "TestOut.xlsx";
 
@@ -70,7 +73,7 @@ namespace ParceYmlApp
             txbPathSelector.Text = FileNameIn;
 
 
-            DataTable dt = new DataTable();
+            DataTable dtMain = new DataTable();
 
             FileInfo existingFile = new FileInfo(FileNameIn);
             using (ExcelPackage package = new ExcelPackage(existingFile))
@@ -102,13 +105,14 @@ namespace ParceYmlApp
                     }
                 }
 
-                dt = GetDataTableFromWS(ws);
-                //dataGridView1.DataSource = dt;
+                dtMain = GetDataTableFromWS(ws);
+                string tableName = "tmp_YML2";
+                if (Program.InsertToDB)
+                    lblInfo.Text = $"Добавлено - {BulkСopyToDB(dtMain, "dbo.tmp_YML2")} строки в {tableName}";
+                Console.WriteLine($"select * from {tableName}");
 
-
-
-                //lblInfo.Text = $"Добавлено - {BulkСopyToDB(dt)} строки";
-                insParamsInDb(dt, package);
+                InsParamsInDb(package);
+                InsProductInDb(package);
 
             }
         }
@@ -381,13 +385,9 @@ namespace ParceYmlApp
             XmlElement root = doc.DocumentElement;
             var productColl = GetOffer(root);
 
-
-
             var brandColl = GetBrandColl(root);
             var manufactureColl = GetManufacturerColl(root);
             var categoriesColl = GetCategoriesColl(root);
-
-            //if (chbCopyToDB.Checked) BulkСopyToDB(root);
 
             string fileName = Path.GetFileNameWithoutExtension(FileName) + ".xlsx";
             string outputDir = Path.GetDirectoryName(FileName);
@@ -845,25 +845,15 @@ namespace ParceYmlApp
             return dtResult;
         }
 
-        private long BulkСopyToDB(DataTable dt)
+        private long BulkСopyToDB(DataTable dt, string tTable)
         {
-            //DateTime.Now.Millisecond
             var insRowsCount = 0;
             using (var connection = new SqlConnection(Program.connectionStr))
             {
                 connection.Open();
-                string tTable = "dbo.tmp_YML2";
                 SqlCommand commandRowCount = new SqlCommand($"select count(*) from {tTable}", connection);
 
-                string tSQL = $" IF EXISTS (select * from dbo.sysobjects where id = object_id('{tTable}')) " +
-                              $" drop table {tTable}";
-                var cmd = new SqlCommand(tSQL, connection);
-                cmd.CommandType = CommandType.Text;
-                cmd.Connection = connection;
-                cmd.ExecuteNonQuery();
-
-
-                GreateTable(dt, connection, tTable);
+                CreateTable(dt, connection, tTable);
 
                 using (var bulkCopy = new SqlBulkCopy(connection))
                 {
@@ -892,50 +882,30 @@ namespace ParceYmlApp
             };
             */
         }
-
-        private void GreateTable(DataTable dt, SqlConnection connection, string tTable)
-        {
-
-            var sSQL = $"CREATE TABLE {tTable} (";
-            for (int i = 0; i < dt.Columns.Count - 1; i++)
-            {
-                sSQL += $"[{dt.Columns[i].Caption}] nvarchar(MAX) NULL,";
-            }
-            sSQL += "[rowNom][int] IDENTITY(1, 1) NOT NULL";
-            sSQL +=
-                $" CONSTRAINT [PK_{tTable}] PRIMARY KEY CLUSTERED ([rowNom] ASC) " +
-                $" WITH(PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF" +
-                $", ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON[PRIMARY]) ON[PRIMARY] TEXTIMAGE_ON[PRIMARY]";
-
-            SqlCommand createtable = new SqlCommand(sSQL, connection);
-            createtable.ExecuteNonQuery();
-
-        }
-
-        private void insParamsInDb(DataTable dt, ExcelPackage ex)
+        
+        private void InsParamsInDb(ExcelPackage ex)
         {
             ExcelWorksheet wsParam = ex.Workbook.Worksheets[(int)enWsName.Фильтры];
             var dtParams = GetDataTableFromWS(wsParam);
             List<RowItemParam> lp = new List<RowItemParam>();
             foreach (DataRow row in dtParams.Rows)
             {
-
-                //todo - сделать!
                 lp.Add(new RowItemParam()
                 {
-                    //Row_id ParamId Name NameTbn ParamType
-                    Row_id = (int)row["Row_id"],
-                    ParamId = (int)row["ParamId"],
+                    Row_id = Convert.ToInt64(row["Row_id"]),
+                    ParamId = Convert.ToInt64(row["ParamId"]),
                     Name = (string)row["Name"],
                     NameTbn = (string)row["NameTbn"],
                     ParamType = (string)row["ParamType"]
                 });
             }
 
-            var dt2 = SqlHelper.ToDataTable(lp.ToList());
-            dataGridView1.DataSource = dt2;
-
-            //Row_id ParamId Name NameTbn ParamType
+            var dtParam = SqlHelper.ToDataTable(lp.ToList());
+            dataGridView1.DataSource = dtParam;
+            string tableName = "tmp_YML2Params";
+            if (Program.InsertToDB)
+                lblInfo.Text = $"Добавлено - {BulkСopyToDB(dtParam, tableName)} строки в {tableName}";
+            Console.WriteLine($"select * from {tableName}");
 
             /*
             IEnumerable<RowItem> query = dtParams.AsEnumerable()
@@ -947,7 +917,90 @@ namespace ParceYmlApp
                     NameCol = c[1].ToString()
                 }).Where(b => b.RowNom > 0).ToList();
             */
+        }
+        private void InsProductInDb(ExcelPackage ex)
+        {
+            ExcelWorksheet wsProduct = ex.Workbook.Worksheets[(int)enWsName.Распарсен];
+            var dtMain = GetDataTableFromWS(wsProduct);
+            List<RowItemProduct> lp = new List<RowItemProduct>();
+            foreach (DataRow row in dtMain.Rows)
+            {
+                //double.Parse(row["Price"], CultureInfo.InvariantCulture)
+                //Double.Parse(((string)row["Price"]).Replace(',', '.'), CultureInfo.InvariantCulture)
+                //var Price2 = double.Parse((string)row["Price"], CultureInfo.InvariantCulture);
+                //var Price3 = Convert.ToDouble(row["Price"]);
 
+                decimal tPrice;
+                decimal.TryParse(((string)row["Price"])?.Replace(",","."), NumberStyles.AllowDecimalPoint,CultureInfo.InvariantCulture, out tPrice);
+
+
+                lp.Add(new RowItemProduct()
+                {
+                    Row_id = Convert.ToInt64(row["Row_id"]),
+                    Available = Convert.ToBoolean(row["Available"]),
+                    ProductId = (string)row["ProductId"],
+                    Name = (string)row["Name"],
+                    ProdType = (string)row["ProdType"],
+                    ProdKind = (string)row["ProdKind"],
+                    Url = (string)row["Url"],
+                    Price = tPrice,//Convert.ToDouble(row["Price"]),
+                    CurrencyId = (string)row["CurrencyId"],
+                    CategoryId = (string)row["CategoryId"],
+                    CategoryName = (string)row["CategoryName"],
+                    Delivery = (string)row["Delivery"],
+                    VendorCode = (string)row["VendorCode"],
+                    Vendor = (string)row["Vendor"],
+                    Description = (string)row["Description"],
+                    Picture = (string)row["Picture"]
+                });
+            }
+            var dtPoduct = SqlHelper.ToDataTable(lp.ToList());
+            //dataGridView1.DataSource = dtPoduct;
+            string tableName = "tmp_YML2Product";
+            if (Program.InsertToDB)
+                lblInfo.Text = $"Добавлено - {BulkСopyToDB(dtPoduct, tableName)} строки в {tableName}";
+            Console.WriteLine($"select * from {tableName}");
+        }
+        
+        private void CreateTable(DataTable dt, SqlConnection connection, string tTable)
+        {
+
+            string sSQL = $" IF EXISTS (select * from dbo.sysobjects where id = object_id('{tTable}')) " +
+                              $" drop table {tTable}";
+            var cmd = new SqlCommand(sSQL, connection);
+            cmd.CommandType = CommandType.Text;
+            cmd.Connection = connection;
+            cmd.ExecuteNonQuery();
+
+            sSQL = $"CREATE TABLE {tTable} (";
+            for (int i = 0; i < dt.Columns.Count - 1; i++)
+            {
+                sSQL += $"[{dt.Columns[i].Caption}] nvarchar(MAX) NULL,";
+            }
+            sSQL += "[rowNom][int] IDENTITY(1, 1) NOT NULL);";
+
+            #region MaxSQL
+
+            /*
+            var sSQL = $"CREATE TABLE {tTable} (";
+            for (int i = 0; i < dt.Columns.Count - 1; i++)
+            {
+                sSQL += $"[{dt.Columns[i].Caption}] nvarchar(MAX) NULL,";
+            }
+            sSQL += "[rowNom][int] IDENTITY(1, 1) NOT NULL";
+            sSQL +=
+                $" CONSTRAINT [PK_{tTable}] PRIMARY KEY CLUSTERED ([rowNom] ASC) " +
+                $" WITH(PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF" +
+                $", ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON[PRIMARY]) ON[PRIMARY] TEXTIMAGE_ON[PRIMARY]";
+            */
+            #endregion
+
+            SqlCommand createtable = new SqlCommand(sSQL, connection);
+            createtable.ExecuteNonQuery();
+        }
+        private void chbCopyToDB_CheckedChanged(object sender, EventArgs e)
+        {
+            Program.InsertToDB = chbCopyToDB.Checked;
         }
     }
 }

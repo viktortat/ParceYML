@@ -43,13 +43,24 @@ namespace ParceYmlApp
 
         private void frmMain_Load(object sender, EventArgs e)
         {
-            Program.connectionStr =
-                Program.connectionStr = ConfigurationManager.ConnectionStrings["TbnProd.Local"].ConnectionString;
-            Program.PathExcelFileImport = AppDomain.CurrentDomain.BaseDirectory + @"testXml\soap.xml";
-            Program.PathFolderBase = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"testXml");
-            Program.InsertToDB = chbCopyToDB.Checked;
+            Program.connectionStr = Program.connectionStr = ConfigurationManager.ConnectionStrings["TbnProd.Local"].ConnectionString;
+            //Program.PathExcelFile = AppDomain.CurrentDomain.BaseDirectory + @"testXml\soap.xml";
+            //Program.PathFolderBase = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"testXml");
+            //Program.PathFolderBase
 
-            txbPathSelector.Text = Program.PathExcelFileImport;
+
+
+
+            //var fName = "TestOut.xlsx";
+            //var FileNameOut = Path.GetFullPath(AppDomain.CurrentDomain.BaseDirectory + @"..\\..\\..\\" + fName);
+            ////var FileNameIn = Path.GetFileNameWithoutExtension(Program.PathExcelFile) + ".xlsx";
+            ////var FileNameIn = @"c:\333\ParceYML\soap.xlsx";
+            //var FileNameIn = Path.GetFullPath(AppDomain.CurrentDomain.BaseDirectory + @"testXml\soapIdeal.xlsx");
+            ////var FileNameIn = Path.GetFullPath(AppDomain.CurrentDomain.BaseDirectory+ @"testXml\soap.xlsx");
+
+            Program.PathFolderBase = AppDomain.CurrentDomain.BaseDirectory;
+            Program.InsertToDB = chbCopyToDB.Checked;
+            txbPathSelector.Text = Program.PathExcelFile;
 
             //(DateTime.Now).Subtract(new DateTime(1970, 1, 1)).TotalSeconds
             //var random = new Random((int)DateTime.Now.Ticks);
@@ -59,28 +70,15 @@ namespace ParceYmlApp
 
         private void btnParseFromExcel_Click(object sender, EventArgs e)
         {
-           
-            //Program.PathFolderBase
-            var fName = "TestOut.xlsx";
-
-            var FileNameOut = Path.GetFullPath(AppDomain.CurrentDomain.BaseDirectory + @"..\\..\\..\\" + fName);
-            //var FileNameIn = Path.GetFileNameWithoutExtension(Program.PathExcelFileImport) + ".xlsx";
-            //var FileNameIn = @"c:\333\ParceYML\soap.xlsx";
-
-
-            var FileNameIn = Path.GetFullPath(AppDomain.CurrentDomain.BaseDirectory + @"testXml\soapIdeal.xlsx");
-            //var FileNameIn = Path.GetFullPath(AppDomain.CurrentDomain.BaseDirectory+ @"testXml\soap.xlsx");
-            txbPathSelector.Text = FileNameIn;
-
+            SelPathExcelFileImport(Filter: "Все файлы (*.*)|*.*|Excel файлы (*.xlsx)|*.xlsx"
+             , Title: "Выберите EXCEL файл для записи в БД");
 
             DataTable dtMain = new DataTable();
 
-            FileInfo existingFile = new FileInfo(FileNameIn);
+            FileInfo existingFile = new FileInfo(Program.PathExcelFile);
             using (ExcelPackage package = new ExcelPackage(existingFile))
             {
-                //ExcelWorksheet ws = package.Workbook.Worksheets["Фильтры"];
                 ExcelWorksheet ws = package.Workbook.Worksheets[(int)enWsName.Распарсен];
-
 
                 List<string> columnNames = new List<string>();
                 foreach (var firstRowCell in ws.Cells[ws.Dimension.Start.Row, ws.Dimension.Start.Column, 1, ws.Dimension.End.Column])
@@ -277,28 +275,31 @@ namespace ParceYmlApp
         }
 
 
-        private void SelPathExcelFileImport()
+        private void SelPathExcelFileImport(
+            string Filter = "Все файлы (*.*)|*.*|Excel файлы (*.xlsx)|*.xlsx|YML файлы (*.xml)|*.xml"
+            ,string Title = "Выбор файла"
+            )
         {
-            OpenFileDialog openFileDialog1 = new OpenFileDialog();
-            /*
-            openFileDialog1.InitialDirectory = Directory.Exists(Path.GetDirectoryName(PathExcelFile))
-               ? Path.GetDirectoryName(PathExcelFile)
-               : "c:\\";
-             */
-            openFileDialog1.Filter = "Все файлы (*.*)|*.*|YML файлы (*.xml)|*.xml";
-            openFileDialog1.FilterIndex = 2;
-            openFileDialog1.RestoreDirectory = true;
-
-            if (openFileDialog1.ShowDialog() == DialogResult.OK)
+            OpenFileDialog dlgSelFile = new OpenFileDialog();
+            dlgSelFile.InitialDirectory = Program.PathFolderBase;
+            dlgSelFile.Filter = Filter;
+            dlgSelFile.FilterIndex = 2;
+            dlgSelFile.RestoreDirectory = true;
+            dlgSelFile.Title = Title;
+            if (dlgSelFile.ShowDialog() == DialogResult.OK)
             {
-                Program.PathExcelFileImport = openFileDialog1.FileName;
-                txbPathSelector.Text = Path.GetFullPath(Program.PathExcelFileImport);
+                var selParh = dlgSelFile.FileName;
+                if (Path.GetExtension(selParh)?.ToUpper() == ".XML")
+                    Program.PathXmlFile = selParh;
+                else
+                    Program.PathExcelFile = selParh;
+
+                txbPathSelector.Text = Path.GetFullPath(selParh);
             }
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
-
             XmlDocument doc = new XmlDocument();
             doc.Load(@"d:\5552\yml.xml");
             XmlNodeList nodeList;
@@ -378,21 +379,21 @@ namespace ParceYmlApp
 
         private void btnParce2_Click(object sender, EventArgs e)
         {
+            SelPathExcelFileImport(Filter: "Все файлы (*.*)|*.*|YML файлы (*.xml)|*.xml"
+                ,Title:"Выберите YML-XML файл для разбора данных в EXCEL");
+
             XmlDocument doc = new XmlDocument();
-            string FileName = Program.PathExcelFileImport;
+            string FileName = Program.PathXmlFile;
 
             doc.Load(FileName);
             XmlElement root = doc.DocumentElement;
-            var productColl = GetOffer(root);
+            var productColl = GetProductColl(root);
 
             var brandColl = GetBrandColl(root);
             var manufactureColl = GetManufacturerColl(root);
             var categoriesColl = GetCategoriesColl(root);
 
-            string fileName = Path.GetFileNameWithoutExtension(FileName) + ".xlsx";
-            string outputDir = Path.GetDirectoryName(FileName);
-
-            var file = new FileInfo(outputDir + '\\' + fileName);
+            //var file = new FileInfo(outputDir + '\\' + fileName);
             using (ExcelPackage package = new ExcelPackage())
             {
                 ExcelWorksheet ws = package.Workbook.Worksheets.Add("Распарсен");
@@ -618,8 +619,13 @@ namespace ParceYmlApp
                 wsBrand.Cells[wsBrand.Dimension.Address].AutoFilter = true;
                 wsBrand.Cells[wsBrand.Dimension.Address].AutoFitColumns();
 
-                package.SaveAs(file);
-                Process.Start(file.FullName);
+
+                string fNameOut = Path.GetFileNameWithoutExtension(FileName) + ".xlsx";
+                string outputDir = Path.GetDirectoryName(FileName);
+
+                var fileOut = new FileInfo(outputDir + fNameOut);
+                package.SaveAs(fileOut);
+                Process.Start(fileOut.FullName);
             }
         }
 
@@ -676,7 +682,7 @@ namespace ParceYmlApp
             return catReturn;
         }
 
-        private static IEnumerable<XmlNode> GetOffer(XmlElement root)
+        private static IEnumerable<XmlNode> GetProductColl(XmlElement root)
         {
             return root.SelectNodes("/yml_catalog/shop/offers/offer")
                 .Cast<XmlNode>()
@@ -768,7 +774,7 @@ namespace ParceYmlApp
         private void button3_Click(object sender, EventArgs e)
         {
             XmlDocument doc = new XmlDocument();
-            string FileName = Program.PathExcelFileImport;
+            string FileName = Program.PathExcelFile;
 
             doc.Load(FileName);
             XmlElement root = doc.DocumentElement;
@@ -882,7 +888,7 @@ namespace ParceYmlApp
             };
             */
         }
-        
+
         private void InsParamsInDb(ExcelPackage ex)
         {
             ExcelWorksheet wsParam = ex.Workbook.Worksheets[(int)enWsName.Фильтры];
@@ -925,14 +931,8 @@ namespace ParceYmlApp
             List<RowItemProduct> lp = new List<RowItemProduct>();
             foreach (DataRow row in dtMain.Rows)
             {
-                //double.Parse(row["Price"], CultureInfo.InvariantCulture)
-                //Double.Parse(((string)row["Price"]).Replace(',', '.'), CultureInfo.InvariantCulture)
-                //var Price2 = double.Parse((string)row["Price"], CultureInfo.InvariantCulture);
-                //var Price3 = Convert.ToDouble(row["Price"]);
-
                 decimal tPrice;
-                decimal.TryParse(((string)row["Price"])?.Replace(",","."), NumberStyles.AllowDecimalPoint,CultureInfo.InvariantCulture, out tPrice);
-
+                decimal.TryParse(((string)row["Price"])?.Replace(",", "."), NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out tPrice);
 
                 lp.Add(new RowItemProduct()
                 {
@@ -961,7 +961,7 @@ namespace ParceYmlApp
                 lblInfo.Text = $"Добавлено - {BulkСopyToDB(dtPoduct, tableName)} строки в {tableName}";
             Console.WriteLine($"select * from {tableName}");
         }
-        
+
         private void CreateTable(DataTable dt, SqlConnection connection, string tTable)
         {
 

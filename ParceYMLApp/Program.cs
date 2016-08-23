@@ -9,9 +9,10 @@ namespace ParceYmlApp
     static class Program
     {
         public static bool InsertToDB;
-        public static string PathExcelFileImport { get; internal set; }
+        public static string PathExcelFile { get; internal set; }
         public static string PathFolderBase { get; internal set; }
         public static string connectionStr { get; set; }
+        public static string PathXmlFile { get; set; }
 
         /// <summary>
         /// The main entry point for the application.

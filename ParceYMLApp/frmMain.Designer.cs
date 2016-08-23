@@ -28,13 +28,12 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.button1 = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.btnSelFile = new System.Windows.Forms.Button();
             this.txbPathSelector = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
-            this.button2 = new System.Windows.Forms.Button();
-            this.btnParce2 = new System.Windows.Forms.Button();
+            this.btnCreatePricat = new System.Windows.Forms.Button();
+            this.btnParseInExcel = new System.Windows.Forms.Button();
             this.chbCopyToDB = new System.Windows.Forms.CheckBox();
             this.button3 = new System.Windows.Forms.Button();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
@@ -42,17 +41,6 @@
             this.btnParseFromExcel = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
-            // 
-            // button1
-            // 
-            this.button1.Enabled = false;
-            this.button1.Location = new System.Drawing.Point(216, 68);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(67, 23);
-            this.button1.TabIndex = 0;
-            this.button1.Text = "Разбор";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // label1
             // 
@@ -93,26 +81,25 @@
             this.label2.TabIndex = 15;
             this.label2.Text = "Выбор файла:";
             // 
-            // button2
+            // btnCreatePricat
             // 
-            this.button2.Enabled = false;
-            this.button2.Location = new System.Drawing.Point(282, 68);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(126, 23);
-            this.button2.TabIndex = 18;
-            this.button2.Text = "Формирование Pricat";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
+            this.btnCreatePricat.Location = new System.Drawing.Point(282, 69);
+            this.btnCreatePricat.Name = "btnCreatePricat";
+            this.btnCreatePricat.Size = new System.Drawing.Size(126, 23);
+            this.btnCreatePricat.TabIndex = 18;
+            this.btnCreatePricat.Text = "Формирование Pricat";
+            this.btnCreatePricat.UseVisualStyleBackColor = true;
+            this.btnCreatePricat.Click += new System.EventHandler(this.btnCreatePricat_Click);
             // 
-            // btnParce2
+            // btnParseInExcel
             // 
-            this.btnParce2.Location = new System.Drawing.Point(7, 95);
-            this.btnParce2.Name = "btnParce2";
-            this.btnParce2.Size = new System.Drawing.Size(203, 28);
-            this.btnParce2.TabIndex = 19;
-            this.btnParce2.Text = "Разбор в Excel";
-            this.btnParce2.UseVisualStyleBackColor = true;
-            this.btnParce2.Click += new System.EventHandler(this.btnParce2_Click);
+            this.btnParseInExcel.Location = new System.Drawing.Point(7, 95);
+            this.btnParseInExcel.Name = "btnParseInExcel";
+            this.btnParseInExcel.Size = new System.Drawing.Size(203, 28);
+            this.btnParseInExcel.TabIndex = 19;
+            this.btnParseInExcel.Text = "Разбор в Excel";
+            this.btnParseInExcel.UseVisualStyleBackColor = true;
+            this.btnParseInExcel.Click += new System.EventHandler(this.btnParseInExcel_Click);
             // 
             // chbCopyToDB
             // 
@@ -129,9 +116,9 @@
             // 
             // button3
             // 
-            this.button3.Location = new System.Drawing.Point(135, 68);
+            this.button3.Location = new System.Drawing.Point(216, 69);
             this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(75, 23);
+            this.button3.Size = new System.Drawing.Size(68, 23);
             this.button3.TabIndex = 21;
             this.button3.Text = "Test";
             this.button3.UseVisualStyleBackColor = true;
@@ -180,13 +167,12 @@
             this.Controls.Add(this.dataGridView1);
             this.Controls.Add(this.button3);
             this.Controls.Add(this.chbCopyToDB);
-            this.Controls.Add(this.btnParce2);
-            this.Controls.Add(this.button2);
+            this.Controls.Add(this.btnParseInExcel);
+            this.Controls.Add(this.btnCreatePricat);
             this.Controls.Add(this.btnSelFile);
             this.Controls.Add(this.txbPathSelector);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.button1);
             this.Name = "frmMain";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Варианты разбора YML";
@@ -198,14 +184,12 @@
         }
 
         #endregion
-
-        private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button btnSelFile;
         private System.Windows.Forms.TextBox txbPathSelector;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Button button2;
-        private System.Windows.Forms.Button btnParce2;
+        private System.Windows.Forms.Button btnCreatePricat;
+        private System.Windows.Forms.Button btnParseInExcel;
         private System.Windows.Forms.CheckBox chbCopyToDB;
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.DataGridView dataGridView1;

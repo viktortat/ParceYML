@@ -407,8 +407,8 @@ namespace ParceYmlApp
                         categoriesColl.Where(x => x.id == isbn["categoryId"].InnerText)
                             .Select(x => x.Name)
                             .FirstOrDefault();
-                    ws.Cells[cRow, 12].Value = isbn["delivery"].InnerText;
-                    ws.Cells[cRow, 13].Value = isbn["vendorCode"].InnerText;
+                    ws.Cells[cRow, 12].Value = isbn["delivery"]?.InnerText ?? "";
+                    ws.Cells[cRow, 13].Value = isbn["vendorCode"]?.InnerText ?? "";
                     ws.Cells[cRow, 14].Value = isbn["vendor"]?.InnerText ?? "";
                     ws.Cells[cRow, 15].Value = isbn["description"]?.InnerText ?? "";
                     ws.Cells[cRow, 16].Value = isbn["picture"].InnerText;
@@ -748,13 +748,13 @@ namespace ParceYmlApp
         {
             ExcelWorksheet wsProduct = ex.Workbook.Worksheets[(int)enWsName.Распарсен];
             var dtMain = GetDataTableFromWS(wsProduct);
-            List<RowItemProduct> lp = new List<RowItemProduct>();
+            List<OfferItem> lp = new List<OfferItem>();
             foreach (DataRow row in dtMain.Rows)
             {
-                decimal tPrice;
-                decimal.TryParse(((string)row["Price"])?.Replace(",", "."), NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out tPrice);
+                double tPrice;
+                double.TryParse(((string)row["Price"])?.Replace(",", "."), NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out tPrice);
 
-                lp.Add(new RowItemProduct()
+                lp.Add(new OfferItem()
                 {
                     Row_id = Convert.ToInt64(row["Row_id"]),
                     Available = Convert.ToBoolean(row["Available"]),

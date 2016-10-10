@@ -201,7 +201,7 @@ namespace ParceYmlApp
 
         private void btnParseInExcel_Click(object sender, EventArgs e)
         {
-            var startCol = 17;
+            var startCol = 19;
             int cRow = 3;
             int cRowAtr = 3;
             int cRowCat = 3;
@@ -252,7 +252,8 @@ namespace ParceYmlApp
                     new RowItem() {RowNom = sRow, ColNom = sCol++, NameCol = "Продавец-код", Name = "VendorCode", Color = clrHead },
                     new RowItem() {RowNom = sRow, ColNom = sCol++, NameCol = "Продавец", Name = "Vendor", Color = clrHead },
                     new RowItem() {RowNom = sRow, ColNom = sCol++, NameCol = "Описание", Name = "Description", Color = clrHead },
-                    new RowItem() {RowNom = sRow, ColNom = sCol++, NameCol = "Фото", Name = "Picture", Color = clrHead}
+                    new RowItem() {RowNom = sRow, ColNom = sCol++, NameCol = "Фото", Name = "Picture", Color = clrHead},
+                    new RowItem() {RowNom = sRow, ColNom = sCol++, NameCol = "Штрих-код", Name = "BarCode", Color = clrHead}
                 };
                 InitTitleWS(lstWsTitle, ws);
 
@@ -412,6 +413,7 @@ namespace ParceYmlApp
                     ws.Cells[cRow, 14].Value = isbn["vendor"]?.InnerText ?? "";
                     ws.Cells[cRow, 15].Value = isbn["description"]?.InnerText ?? "";
                     ws.Cells[cRow, 16].Value = isbn["picture"].InnerText;
+                    ws.Cells[cRow, 17].Value = isbn["barcode"]?.InnerText ?? "";
 
                     XmlNodeList nodeParams = isbn.SelectNodes("param");
                     foreach (XmlNode p in nodeParams)
@@ -443,7 +445,7 @@ namespace ParceYmlApp
                 string fNameOut = Path.GetFileNameWithoutExtension(FileName) + ".xlsx";
                 string outputDir = Path.GetDirectoryName(FileName);
 
-                var fileOut = new FileInfo(outputDir + fNameOut);
+                var fileOut = new FileInfo(outputDir+"/"+fNameOut);
                 package.SaveAs(fileOut);
                 Process.Start(fileOut.FullName);
             }
